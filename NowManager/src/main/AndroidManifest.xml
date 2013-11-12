@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.collinguarino.nowmanager"
-    android:versionCode="1"
-    android:versionName="1.01" >
+    android:versionCode="2"
+    android:versionName="1.1" >
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:minSdkVersion="11"
+        android:targetSdkVersion="17" />
 
     <application
         android:allowBackup="true"
@@ -27,13 +27,12 @@
 
         </activity>
 
-        <activity
+        <!--<activity
             android:name="com.collinguarino.nowmanager.Settings"
-            android:label="Preferences      "
+            android:label="Support       "
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:parentActivityName="com.collinguarino.nowmanager.Main"/>
-
+            android:parentActivityName="com.collinguarino.nowmanager.Main"/>-->
 
     </application>
 

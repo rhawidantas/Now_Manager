@@ -2,38 +2,18 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
-    <PreferenceCategory android:title="Features">
+        <Preference android:title="Contact Developer"
+            android:summary="Feel free to send me an email, all feedback is appreciated."
+            android:key="EMAIL_DEVELOPER"
+            >
+        </Preference>
 
-        <CheckBoxPreference
-            android:title="Count Up Mode"
-            android:defaultValue="false"
-            android:summary="Labels number of events"
-            android:key="COUNT_UP_MODE" />
-
-
-    </PreferenceCategory>
-
-<!--    <PreferenceCategory android:title="Formats">
-
-        <ListPreference
-            android:title="Date Format"
-            android:summary="Date display format for logged events"
-            android:key="DATE_FORMAT"
-            android:icon="@drawable/info"/>
-            &lt;!&ndash;android:entries="@array/settings_push_delay_human_value"
-            android:entryValues="@array/settings_push_delay_phone_value"
-            android:defaultValue="????"&ndash;&gt;
-
-        <ListPreference
-            android:title="Time Format"
-            android:summary="Time display format for logged events"
-            android:key="TIME_FORMAT"
-            android:icon="@drawable/info"/>
-        &lt;!&ndash;android:entries="@array/settings_push_delay_human_value"
-        android:entryValues="@array/settings_push_delay_phone_value"
-        android:defaultValue="????"&ndash;&gt;
-
-    </PreferenceCategory>-->
+        <Preference android:title="Support The Developer"
+            android:summary="All my apps are completely free with no advertisements. Tap to donate via $0.99 Google Play Store purchase."
+            >
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=com.collinguarino.donate" />
+        </Preference>
 
     <PreferenceCategory android:title="About">
 

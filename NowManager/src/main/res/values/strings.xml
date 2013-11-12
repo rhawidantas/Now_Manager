@@ -4,5 +4,8 @@
     <string name="app_name">Now Manager</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_section1">Event Log</string>
+    <string name="title_section2">Tally Counter</string>
+    <string name="title_section3">Score Poster</string>
 
 </resources>

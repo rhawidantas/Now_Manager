@@ -7,7 +7,8 @@
     android:paddingTop="0dp"
     android:paddingBottom="10dp"
     tools:context=".Main"
-    android:background="#eeeeee">
+    android:background="#eeeeee"
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -18,7 +19,8 @@
         android:longClickable="true">
 
         <EditText
-            android:layout_width="160dp"
+            android:layout_width="wrap_content"
+            android:maxWidth="160dp"
             android:layout_height="50dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/eventNameInput"
@@ -76,5 +78,22 @@
     </LinearLayout>
 
 </RelativeLayout>
+
+
+    <!--Back of the card layout-->
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:visibility="invisible"
+        android:id="@+id/cardBack">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="This is the back of the card!"
+            android:id="@+id/textView" />
+
+    </RelativeLayout>
 
 </LinearLayout>

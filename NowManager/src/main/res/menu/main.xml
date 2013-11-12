@@ -10,21 +10,24 @@
         android:id="@+id/goTop"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Recent Events"/>
+        android:title="Recent (Top)"/>
+
+    <item
+        android:id="@+id/goBot"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Oldest (Bottom)"/>
 
     <item
         android:id="@+id/deleteAll"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Clear All"/>
+        android:title="Remove All"/>
 
-    <item
-        android:id="@+id/settings"
+<!--    <item
+        android:id="@+id/help"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Settings"
-        android:icon="@drawable/settings">
-
-    </item>
+        android:title="Help"/>-->
 
 </menu>
