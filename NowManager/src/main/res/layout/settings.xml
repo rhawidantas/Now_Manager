@@ -2,22 +2,36 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
-        <Preference android:title="Contact Developer"
-            android:summary="Feel free to send me an email, all feedback is appreciated."
-            android:key="EMAIL_DEVELOPER"
-            >
-        </Preference>
+    <!--<PreferenceCategory android:title="Tally Counter Preferences">
 
-        <Preference android:title="Support The Developer"
-            android:summary="All my apps are completely free with no advertisements. Tap to donate via $0.99 Google Play Store purchase."
-            >
-            <intent android:action="android.intent.action.VIEW"
-                android:data="https://play.google.com/store/apps/details?id=com.collinguarino.donate" />
-        </Preference>
+        <CheckBoxPreference
+            android:title="Number suffixes"
+            android:defaultValue="true"
+            android:summary="1st, 2nd, 3rd, 4th, 5th (instead of 1, 2, 3, 4, 5)"
+            android:key="numberSuffixes" />
+
+        <EditTextPreference
+            android:defaultValue="1"
+            android:key="defaultSplit"
+            android:title="Count Warning"
+            android:summary="Display a warning after a specified integer"
+            android:inputType="number"
+            android:maxLength="3"/>
+
+        <ListPreference
+            android:title="Warning Method"
+            android:key="ROUNDING_OPTION"
+            android:summary="Select count warning preference"
+            android:defaultValue="1" />
+            android:entries="@array/need_to_create"
+            android:entryValues="@array/need_to_create"
+
+    </PreferenceCategory>-->
+
 
     <PreferenceCategory android:title="About">
 
-        <Preference android:title="Version 1.0"
+        <Preference android:title="Version 1.2"
             android:summary="Tap to rate this version on the Google Play Store. All feedback is appreciated."
             android:icon="@drawable/nowmanagericon">
             <intent android:action="android.intent.action.VIEW"

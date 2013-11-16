@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -69,7 +68,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                         new String[] {
                                 getString(R.string.title_section1),
                                 getString(R.string.title_section2),
-                                //getString(R.string.title_section3),
                         }),
                 this);
 
@@ -92,79 +90,16 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         }
     }
 
-/*    *//**
-     * A dummy fragment representing a section of the app, but that simply
-     * displays dummy text.
-     *//*
-    public class DummySectionFragment extends Fragment {
-        *//**
-         * The fragment argument representing the section number for this
-         * fragment.
-         *//*
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        public DummySectionFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-
-            int sectionNum = (getArguments().getInt(ARG_SECTION_NUMBER));
-
-            //View rootView;
-
-            *//**
-             * Can't use a string switch due to java version limits on Android. This uses the order of the strings in the dropdown list
-             *//*
-
-            switch (sectionNum) {
-
-                case 1:
-
-                    inflateEditRow();
-
-                    //return true;
-
-                case 2:
-
-                    inflateEditRow();
-
-                    //return rootView;
-
-            }
-
-            // not sure if this is sloppy coding, but this return statement was required, although it's never used. I don't know why it works, but it works!
-            //return rootView = inflater.inflate(R.layout.tip_calculator, container, false);
-            return ;
-        }
-    }*/
-/*
-    @Override
-    public boolean onNavigationItemSelected(int position, long id) {
-        // When the given dropdown item is selected, show its contents in the
-        // container view.
-        Fragment fragment = new DummySectionFragment();
-        Bundle args = new Bundle();
-        args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-        fragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parentView, fragment)
-                .commit();
-        return true;
-    }*/
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-
         return true;
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
 
-        // Restore the previously serialized current dropdown position. Not working correctly.
+        // SHOULD restore the previously serialized current dropdown position. Not working correctly.
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
             getActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
@@ -175,7 +110,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // Serialize the current dropdown position.
+        // SHOULD Serialize the current dropdown position. Not working correctly.
         outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
                 getActionBar().getSelectedNavigationIndex());
 
@@ -193,9 +128,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         switch (item.getItemId()) {
             case R.id.newTimeFragment:
 
-                if (actionBar.getSelectedNavigationIndex() <= 1) {
-                    inflateEditRow();
-                }
+                inflateTimeCard();
 
                 return true;
 
@@ -205,6 +138,13 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                 ScrollView scrollView = (ScrollView) findViewById(R.id.mainView);
                 scrollView.setSmoothScrollingEnabled(true);
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
+
+                return true;
+
+            case R.id.settings:
+
+                Intent intent = new Intent(getApplicationContext(), Settings.class);
+                startActivity(intent);
 
                 return true;
 
@@ -254,7 +194,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         } return true;
     }
 
-    private void inflateEditRow() {
+    private void inflateTimeCard() {
         // handling the inflation of a new timestamped card
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -313,13 +253,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         timeCardFragmentLayout.setOnTouchListener(new OnSwipeTouchListener() {
             public void onSwipeTop() {
 
-                //Toast.makeText(getApplicationContext(), "top", Toast.LENGTH_SHORT).show();
-
-                /*RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
-
-                cardBack.setVisibility(View.VISIBLE);
-                timeCardFragmentLayout.setVisibility(View.INVISIBLE);*/
-
             }
 
             public void onSwipeRight() {
@@ -329,17 +262,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                 // Deletes the fragment
                 hideKeyboard();
                 mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
-
-                // hide keyboard
-                try
-                {
-                    InputMethodManager inputManager = (InputMethodManager) Main.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(Main.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-                catch (Exception e)
-                {
-
-                }
 
             }
 
@@ -351,33 +273,13 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                 hideKeyboard();
                 mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
 
-                // hide keyboard
-                try
-                {
-                    InputMethodManager inputManager = (InputMethodManager) Main.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(Main.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-                catch (Exception e)
-                {
-                    // Ignore exceptions if any
-                    Log.e("KeyBoardUtil", e.toString(), e);
-                }
-
             }
 
             public void onSwipeBottom() {
 
-                //Toast.makeText(getApplicationContext(), "bottom", Toast.LENGTH_SHORT).show();
-
-                /*RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
-
-                cardBack.setVisibility(View.VISIBLE);
-                timeCardFragmentLayout.setVisibility(View.INVISIBLE);*/
-
             }
 
             public void onLongPressed() {
-                //Toast.makeText(getApplicationContext(),"LONG PRESSED", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -386,12 +288,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         final RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
         cardBack.setOnTouchListener(new OnSwipeTouchListener() {
             public void onSwipeTop() {
-                //Toast.makeText(getApplicationContext(), "top", Toast.LENGTH_SHORT).show();
-
-                /*RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
-
-                cardBack.setVisibility(View.INVISIBLE);
-                timeCardFragmentLayout.setVisibility(View.VISIBLE);*/
 
             }
 
@@ -403,17 +299,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                 hideKeyboard();
                 mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
 
-                // hide keyboard
-                try
-                {
-                    InputMethodManager inputManager = (InputMethodManager) Main.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(Main.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-                catch (Exception e)
-                {
-
-                }
-
             }
 
             public void onSwipeLeft() {
@@ -424,33 +309,13 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                 hideKeyboard();
                 mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
 
-                // hide keyboard
-                try
-                {
-                    InputMethodManager inputManager = (InputMethodManager) Main.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(Main.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-                catch (Exception e)
-                {
-                    // Ignore exceptions if any
-                    Log.e("KeyBoardUtil", e.toString(), e);
-                }
-
             }
 
             public void onSwipeBottom() {
 
-                //Toast.makeText(getApplicationContext(), "bottom", Toast.LENGTH_SHORT).show();
-
-                /*RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
-
-                cardBack.setVisibility(View.INVISIBLE);
-                timeCardFragmentLayout.setVisibility(View.VISIBLE);*/
-
             }
 
             public void onLongPressed() {
-                //Toast.makeText(getApplicationContext(),"LONG PRESSED", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -497,13 +362,11 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 
-            /*if (actionBar.getSelectedNavigationIndex() == 2) {
-                inflateScoreCaster();
-            }*/
-
         return true;
     }
 
+
+    // configures gesture actions for time card
     public class OnSwipeTouchListener implements View.OnTouchListener {
 
         public final GestureDetector gestureDetector = new GestureDetector(new GestureListener());
@@ -598,6 +461,8 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         }
     }
 
+
+    // displays a dialog after x days or x app open intents asking the user to rate on the Google Play Store
         private final static String APP_TITLE = "Now Manager";
         private final static String APP_PNAME = "com.collinguarino.nowmanager";
 
@@ -637,6 +502,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             showRateDialog(mContext, editor);*/
         }
 
+    // called by app_rater
         public void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
             final Dialog dialog = new Dialog(mContext);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
