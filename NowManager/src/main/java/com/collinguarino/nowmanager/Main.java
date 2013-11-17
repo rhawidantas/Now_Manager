@@ -40,6 +40,7 @@ import java.util.Date;
 public class Main extends FragmentActivity implements ActionBar.OnNavigationListener {
 
     final Context context = this;
+    //TODO This should be a listview.
     public LinearLayout mContainerView;
     ActionBar actionBar;
 
@@ -95,6 +96,14 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // The delete all menu option shouldn't be selectable if there are no items to delete.
+        final MenuItem menuItem = menu.findItem(R.id.deleteAll);
+        menuItem.setEnabled(getItemCount() != 0);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -288,6 +297,17 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     }
 
     /**
+     * Get the number of items that currently exist.
+     * @return The number of items that currently exist.
+     */
+    private int getItemCount() {
+        if(mContainerView == null) {
+            return 0;
+        }
+        return mContainerView.getChildCount();
+    }
+
+    /**
      * Common Swipe Touch Listener implementation
      */
     class CommonSwipeTouchListener extends OnSwipeTouchListener {
@@ -402,9 +422,13 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     }
 
     public void hideKeyboard() {
+        final View currentFocusedView = this.getCurrentFocus();
+        if(currentFocusedView == null) {
+            return;
+        }
         InputMethodManager inputManager = (InputMethodManager)
                 this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
+        inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

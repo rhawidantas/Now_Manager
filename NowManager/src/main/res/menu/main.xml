@@ -3,7 +3,7 @@
     <item android:id="@+id/newTimeFragment"
         android:title="Add"
         android:orderInCategory="100"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/addnew"/>
 
     <item
