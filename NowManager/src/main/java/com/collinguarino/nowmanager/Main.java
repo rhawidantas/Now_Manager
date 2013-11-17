@@ -65,17 +65,16 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                         getActionBarThemedContextCompat(),
                         android.R.layout.simple_list_item_1,
                         android.R.id.text1,
-                        new String[] {
+                        new String[]{
                                 getString(R.string.title_section1),
                                 getString(R.string.title_section2),
                         }),
                 this);
 
 
-
         app_launched(this);
 
-        // SHOULD restore the previously serialized current dropdown position. // TODO Verify this works.
+        // restore the previously serialized current dropdown position.
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
             getActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
@@ -106,7 +105,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // SHOULD Serialize the current dropdown position. Not working correctly.
+        // Serialize the current dropdown position.
         outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
                 getActionBar().getSelectedNavigationIndex());
 
@@ -167,7 +166,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
                                 hideKeyboard();
                                 mContainerView.removeAllViews();
-                                Toast.makeText(getApplicationContext(),"All Events Deleted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
 
                             }
                         });
@@ -187,7 +186,8 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
                 return true;
 
-        } return true;
+        }
+        return true;
     }
 
     private void inflateTimeCard() {
@@ -230,20 +230,22 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             } else {
                 timeText.setText(hourString + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
             }
-        } else if (DateFormat.is24HourFormat(this)){
+        } else if (DateFormat.is24HourFormat(this)) {
 
             if (minuteString < 10) {
                 timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            } if (secondString < 10) {
+            }
+            if (secondString < 10) {
                 timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":0" + secondString); // 12 hour version: add if statement on 24hr version
-            } if (secondString < 10 && minuteString < 10) {
+            }
+            if (secondString < 10 && minuteString < 10) {
                 timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":0" + secondString); // 12 hour version: add if statement on 24hr version
             } else {
                 timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
             }
         }
 
-        dateText.setText(new SimpleDateFormat("MM-dd").format(new Date())+" "+ampm);
+        dateText.setText(new SimpleDateFormat("MM-dd").format(new Date()) + " " + ampm);
 
         final CommonSwipeTouchListener onSwipeTouchListener = new CommonSwipeTouchListener(rowView);
         final RelativeLayout timeCardFragmentLayout = (RelativeLayout) rowView.findViewById(R.id.timeCardFragmentLayout);
@@ -259,8 +261,8 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         set.addAnimation(animation);
 
         animation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, -1.0f,Animation.RELATIVE_TO_SELF, 0.0f
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF, 0.0f
         );
         animation.setDuration(500);
         set.addAnimation(animation);
@@ -271,16 +273,14 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         // If tally counter is selected from the actionbar dropdown then inflate numbers
         if (actionBar.getSelectedNavigationIndex() == 1) {
             final EditText eventNameInput = (EditText) rowView.findViewById(R.id.eventNameInput);
-                eventNameInput.setText(String.valueOf(mContainerView.getChildCount() +1)); // gets index then adds one
+            eventNameInput.setText(String.valueOf(mContainerView.getChildCount() + 1)); // gets index then adds one
         }
 
         mContainerView.addView(rowView, 0); //mContainerView.getChildCount() -1 for descending
 
-        Handler handler=new Handler();
-        final Runnable r = new Runnable()
-        {
-            public void run()
-            {
+        Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
                 final ScrollView scrollView1 = (ScrollView) findViewById(R.id.mainView);
                 scrollView1.setSmoothScrollingEnabled(true);
                 scrollView1.fullScroll(View.FOCUS_UP);
@@ -296,6 +296,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     class CommonSwipeTouchListener extends OnSwipeTouchListener {
 
         final View rowView;
+
         public CommonSwipeTouchListener(final View rowView) {
             this.rowView = rowView;
         }
@@ -365,7 +366,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             public boolean onSingleTapUp(MotionEvent e) {
 
 
-
                 return false;
             }
 
@@ -432,79 +432,81 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
 
     // displays a dialog after x days or x app open intents asking the user to rate on the Google Play Store
-        private final static String APP_TITLE = "Now Manager";
-        private final static String APP_PNAME = "com.collinguarino.nowmanager";
+    private final static String APP_TITLE = "Now Manager";
+    private final static String APP_PNAME = "com.collinguarino.nowmanager";
 
-        private final static int DAYS_UNTIL_PROMPT = 3;
-        private final static int LAUNCHES_UNTIL_PROMPT = 6;
+    private final static int DAYS_UNTIL_PROMPT = 3;
+    private final static int LAUNCHES_UNTIL_PROMPT = 6;
 
-        public void app_launched(Context mContext) {
-            SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
-            if (prefs.getBoolean("dontshowagain", false)) { return ; }
+    public void app_launched(Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
+        if (prefs.getBoolean("dontshowagain", false)) {
+            return;
+        }
 
-            SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences.Editor editor = prefs.edit();
 
-            // Increment launch counter
-            long launch_count = prefs.getLong("launch_count", 0) + 1;
-            editor.putLong("launch_count", launch_count);
+        // Increment launch counter
+        long launch_count = prefs.getLong("launch_count", 0) + 1;
+        editor.putLong("launch_count", launch_count);
 
-            // Get date of first launch
-            Long date_firstLaunch = prefs.getLong("date_firstlaunch", 0);
-            if (date_firstLaunch == 0) {
-                date_firstLaunch = System.currentTimeMillis();
-                editor.putLong("date_firstlaunch", date_firstLaunch);
+        // Get date of first launch
+        Long date_firstLaunch = prefs.getLong("date_firstlaunch", 0);
+        if (date_firstLaunch == 0) {
+            date_firstLaunch = System.currentTimeMillis();
+            editor.putLong("date_firstlaunch", date_firstLaunch);
+        }
+
+        // Wait at least n days before opening
+        if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
+            if (System.currentTimeMillis() >= date_firstLaunch +
+                    (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
+                showRateDialog(mContext, editor);
             }
+        }
 
-            // Wait at least n days before opening
-            if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
-                if (System.currentTimeMillis() >= date_firstLaunch +
-                        (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
-                    showRateDialog(mContext, editor);
-                }
-            }
+        editor.commit();
 
-            editor.commit();
-
-            // used for testing on first start up
+        // used for testing on first start up
             /*SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
             SharedPreferences.Editor editor = prefs.edit();
             showRateDialog(mContext, editor);*/
-        }
+    }
 
     // called by app_rater
-        public void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
-            final Dialog dialog = new Dialog(mContext);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.ratedialog);
+    public void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
+        final Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.ratedialog);
 
-            Button b1 = (Button) dialog.findViewById(R.id.button1);
-            b1.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
-                    dialog.dismiss();
+        Button b1 = (Button) dialog.findViewById(R.id.button1);
+        b1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
+                dialog.dismiss();
+            }
+        });
+
+        Button b2 = (Button) dialog.findViewById(R.id.button2);
+        b2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Button b3 = (Button) dialog.findViewById(R.id.button3);
+        b3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (editor != null) {
+                    editor.putBoolean("dontshowagain", true);
+                    editor.commit();
                 }
-            });
+                dialog.dismiss();
+            }
+        });
 
-            Button b2 = (Button) dialog.findViewById(R.id.button2);
-            b2.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-            Button b3 = (Button) dialog.findViewById(R.id.button3);
-            b3.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    if (editor != null) {
-                        editor.putBoolean("dontshowagain", true);
-                        editor.commit();
-                    }
-                    dialog.dismiss();
-                }
-            });
-
-            dialog.show();
-        }
+        dialog.show();
+    }
 
     public void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)
