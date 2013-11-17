@@ -249,77 +249,12 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
         dateText.setText(new SimpleDateFormat("MM-dd").format(new Date())+" "+ampm);
 
+        final CommonSwipeTouchListener onSwipeTouchListener = new CommonSwipeTouchListener(rowView);
         final RelativeLayout timeCardFragmentLayout = (RelativeLayout) rowView.findViewById(R.id.timeCardFragmentLayout);
-        timeCardFragmentLayout.setOnTouchListener(new OnSwipeTouchListener() {
-            public void onSwipeTop() {
-
-            }
-
-            public void onSwipeRight() {
-
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-
-                // Deletes the fragment
-                hideKeyboard();
-                mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
-
-            }
-
-            public void onSwipeLeft() {
-
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-
-                // Deletes the fragment
-                hideKeyboard();
-                mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
-
-            }
-
-            public void onSwipeBottom() {
-
-            }
-
-            public void onLongPressed() {
-
-            }
-
-        });
+        timeCardFragmentLayout.setOnTouchListener(onSwipeTouchListener);
 
         final RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
-        cardBack.setOnTouchListener(new OnSwipeTouchListener() {
-            public void onSwipeTop() {
-
-            }
-
-            public void onSwipeRight() {
-
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-
-                // Deletes the fragment
-                hideKeyboard();
-                mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
-
-            }
-
-            public void onSwipeLeft() {
-
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-
-                // Deletes the fragment
-                hideKeyboard();
-                mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
-
-            }
-
-            public void onSwipeBottom() {
-
-            }
-
-            public void onLongPressed() {
-
-            }
-
-        });
+        cardBack.setOnTouchListener(onSwipeTouchListener);
 
         // animation for popping in new card
         AnimationSet set = new AnimationSet(true);
@@ -357,6 +292,44 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         };
 
         handler.postDelayed(r, 300);
+    }
+
+    /**
+     * Common Swipe Touch Listener implementation
+     */
+    class CommonSwipeTouchListener extends OnSwipeTouchListener {
+
+        final View rowView;
+        public CommonSwipeTouchListener(final View rowView) {
+            this.rowView = rowView;
+        }
+
+        public void onSwipeTop() {
+        }
+
+        public void onSwipeRight() {
+            onSwipe();
+        }
+
+        public void onSwipeLeft() {
+            onSwipe();
+        }
+
+        /**
+         * Common swipe action.
+         */
+        private void onSwipe() {
+            Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+            // Deletes the fragment
+            hideKeyboard();
+            mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
+        }
+
+        public void onSwipeBottom() {
+        }
+
+        public void onLongPressed() {
+        }
     }
 
     @Override
