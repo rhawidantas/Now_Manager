@@ -74,6 +74,12 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
 
         app_launched(this);
+
+        // SHOULD restore the previously serialized current dropdown position. // TODO Verify this works.
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
+            getActionBar().setSelectedNavigationItem(
+                    savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+        }
     }
 
     /**
@@ -94,16 +100,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-
-        // SHOULD restore the previously serialized current dropdown position. Not working correctly.
-        if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            getActionBar().setSelectedNavigationItem(
-                    savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
-        }
     }
 
     @Override
