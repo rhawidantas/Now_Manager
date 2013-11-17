@@ -15,11 +15,9 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
 import android.text.format.Time;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
@@ -199,6 +197,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         final TextView dateText = (TextView) rowView.findViewById(R.id.dateText);
         final TextView timeText = (TextView) rowView.findViewById(R.id.timeText);
 
+        //TODO Is this time variable used for anything?
         Time time = new Time();
         time.setToNow();
 
@@ -301,9 +300,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             this.rowView = rowView;
         }
 
-        public void onSwipeTop() {
-        }
-
         public void onSwipeRight() {
             onSwipe();
         }
@@ -321,12 +317,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             hideKeyboard();
             mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
         }
-
-        public void onSwipeBottom() {
-        }
-
-        public void onLongPressed() {
-        }
     }
 
     @Override
@@ -334,102 +324,6 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
         return true;
     }
-
-
-    // configures gesture actions for time card
-    public class OnSwipeTouchListener implements View.OnTouchListener {
-
-        public final GestureDetector gestureDetector = new GestureDetector(new GestureListener());
-
-        public boolean onTouch(final View view, final MotionEvent motionEvent) {
-            return gestureDetector.onTouchEvent(motionEvent);
-        }
-
-        private final class GestureListener extends GestureDetector.SimpleOnGestureListener implements GestureDetector.OnGestureListener {
-
-            private static final int SWIPE_THRESHOLD = 100;
-            private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-            @Override
-            public boolean onDown(MotionEvent e) {
-
-                return true;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {
-
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-
-
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-
-                onLongPressed();
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
-                boolean result = false;
-                try {
-                    float diffY = e2.getY() - e1.getY();
-                    float diffX = e2.getX() - e1.getX();
-                    if (Math.abs(diffX) > Math.abs(diffY)) {
-                        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                            if (diffX > 0) {
-                                onSwipeRight();
-                            } else {
-                                onSwipeLeft();
-                            }
-                        }
-                    } else {
-                        if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                            if (diffY > 0) {
-                                onSwipeBottom();
-                            } else {
-                                onSwipeTop();
-                            }
-                        }
-                    }
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                return result;
-            }
-        }
-
-        public void onSwipeRight() {
-        }
-
-        public void onSwipeLeft() {
-        }
-
-        public void onSwipeTop() {
-        }
-
-        public void onSwipeBottom() {
-        }
-
-        public void onLongPressed() {
-
-        }
-    }
-
 
     // displays a dialog after x days or x app open intents asking the user to rate on the Google Play Store
     private final static String APP_TITLE = "Now Manager";
@@ -474,6 +368,7 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     }
 
     // called by app_rater
+    //TODO Convert this dialog to a DialogFragment.
     public void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
         final Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
