@@ -33,3 +33,7 @@ proguard-project.txt
 # Other
 .DS_Store
 tmp
+
+NowManager.iml
+NowManager/NowManager-NowManager.iml
+gradle/wrapper/gradle-wrapper.properties
