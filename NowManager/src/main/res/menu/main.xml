@@ -3,7 +3,7 @@
     <item android:id="@+id/newTimeFragment"
         android:title="Add"
         android:orderInCategory="100"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/addnew"/>
 
     <item
@@ -24,10 +24,10 @@
         android:showAsAction="never"
         android:title="Remove All"/>
 
-<!--    <item
-        android:id="@+id/help"
+    <item
+        android:id="@+id/settings"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Help"/>-->
+        android:title="Settings"/>
 
 </menu>
