@@ -2,6 +2,7 @@ package com.collinguarino.nowmanager.provider;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -69,19 +70,18 @@ public class Contracts {
          * Helper method to get all of the time cards that are classified as a tally
          * @return Cursor with all tally time cards.
          */
-        public static Cursor getTallyTimeCards() {
-            final NowManagerProvider provider = new NowManagerProvider();
+        public static Cursor getTallyTimeCards(final Context context) {
             final String[] projection = {_ID};
             final String selection = C_IS_TALLY + "=1";
-            return provider.query(CONTENT_URI,projection,selection,null,null);
+            return context.getContentResolver().query(CONTENT_URI,projection,selection,null,null);
         }
 
         /**
          * Helper method to get the count of all time cards that are classified as a tally
          * @return number of tally time cards.
          */
-        public static int getTallyTimeCardCount() {
-            final Cursor cursor = getTallyTimeCards();
+        public static int getTallyTimeCardCount(final Context context) {
+            final Cursor cursor = getTallyTimeCards(context);
             if(cursor == null) {
                 return 0;
             }

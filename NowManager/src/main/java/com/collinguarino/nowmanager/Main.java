@@ -208,7 +208,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // If tally counter is selected from the actionbar dropdown then inflate numbers
         if (mActionBar.getSelectedNavigationIndex() == 1) {
             //get the number of tally rows
-            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount()+1;
+            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this)+1;
             //is tally
             values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
         } else {
