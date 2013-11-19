@@ -75,4 +75,20 @@ public class TimeCardAdapter extends CursorAdapter {
         TextView dateText;
         TextView timeText;
     }
+
+    /**
+     * Helper method to get a TimeCard object from this adapter at a position.
+     * @param position Position to get timecard from
+     * @return A TimeCard object or null if the position is invalid.
+     */
+    public TimeCard getTimeCard(final int position) {
+        final Cursor cursor = getCursor();
+        TimeCard timeCard = null;
+
+        if(cursor.moveToPosition(position)) {
+            timeCard = new TimeCard(cursor);
+        }
+
+        return timeCard;
+    }
 }

@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.collinguarino.nowmanager.model.TimeCard;
 import com.collinguarino.nowmanager.provider.Contracts;
 import com.collinguarino.nowmanager.provider.NowManagerProvider;
 
@@ -75,11 +76,37 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new TimeCardAdapter(this, null);
         setListAdapter(mAdapter);
+        final ListView listView = getListView();
+        // Make the list dismissable by swipe.
+        SwipeDismissListViewTouchListener swipeDismissListViewTouchListener = new SwipeDismissListViewTouchListener(listView, listDismissCallbacks);
+        listView.setOnTouchListener(swipeDismissListViewTouchListener);
+        listView.setOnScrollListener(swipeDismissListViewTouchListener.makeScrollListener());
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         getLoaderManager().initLoader(0, null, this);
     }
+
+    /**
+     * Callbacks for when list items are dismissed (by swipe).
+     */
+    private SwipeDismissListViewTouchListener.DismissCallbacks listDismissCallbacks = new SwipeDismissListViewTouchListener.DismissCallbacks() {
+        @Override
+        public boolean canDismiss(int position) {
+            //Return false here if the item at the position should not be dissmissable
+            return true;
+        }
+
+        @Override
+        public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+            // TODO Should flag items for deletion instead of a strict delete.
+            // TODO only then will an Undo feature be possible.
+            for (int position : reverseSortedPositions) {
+                final TimeCard timeCard = ((TimeCardAdapter)mAdapter).getTimeCard(position);
+                getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, Contracts.TimeCards._ID + " = " + timeCard.getId(), null);
+            }
+        }
+    };
 
     /**
      * Backward-compatible version of {@link ActionBar#getThemedContext()} that
