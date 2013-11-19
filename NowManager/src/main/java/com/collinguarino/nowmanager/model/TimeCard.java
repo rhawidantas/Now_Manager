@@ -1,7 +1,6 @@
 package com.collinguarino.nowmanager.model;
 
 import android.database.Cursor;
-import android.util.Log;
 
 import com.collinguarino.nowmanager.provider.Contracts;
 
@@ -19,7 +18,6 @@ public class TimeCard {
         eventNameInput = cursor.getString(Contracts.TimeCards.I_EVENT_NAME_INPUT);
         timestamp = cursor.getLong(Contracts.TimeCards.I_TIMESTAMP);
         isTally = cursor.getInt(Contracts.TimeCards.I_IS_TALLY) == 1;
-        Log.v("TimeCard", toString());
     }
 
     public long getId() {
