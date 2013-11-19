@@ -21,7 +21,7 @@ public class TimeCardAdapter extends CursorAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM-dd a");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd a");
     public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
     public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
