@@ -16,7 +16,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,11 +71,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             getActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
         }
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new TimeCardAdapter(this, null);
         setListAdapter(mAdapter);
@@ -130,17 +125,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         // Serialize the current dropdown position.
-        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
-                getActionBar().getSelectedNavigationIndex());
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar().getSelectedNavigationIndex());
     }
 
     @Override
@@ -349,7 +335,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         mAdapter.swapCursor(cursor);
-        Log.v(TAG, "cursor size: " + (cursor != null ? cursor.getCount() : "null"));
     }
 
     @Override
