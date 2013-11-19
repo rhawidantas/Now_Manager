@@ -24,7 +24,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.collinguarino.nowmanager.provider.Contracts;
@@ -108,9 +108,21 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // The delete all menu option shouldn't be selectable if there are no items to delete.
-        menu.findItem(R.id.deleteAll).setEnabled(getItemCount() != 0);
-        menu.findItem(R.id.goTop).setEnabled(getItemCount() != 0);
-        menu.findItem(R.id.goBot).setEnabled(getItemCount() != 0);
+        final int itemCount = getItemCount();
+        final boolean shouldEnableButton = itemCount != 0;
+        menu.findItem(R.id.deleteAll).setEnabled(shouldEnableButton);
+        menu.findItem(R.id.goTop).setEnabled(shouldEnableButton);
+        menu.findItem(R.id.goBot).setEnabled(shouldEnableButton);
+
+        // The jump to top/bottom of the list buttons should only show when necessary.
+        // Hide the buttons if there aren't many items in the list, show the buttons if there are.
+        final ListView listView = getListView();
+        if(listView != null) {
+            final int visibleItemsInList = listView.getLastVisiblePosition() - listView.getFirstVisiblePosition() + 1;
+            final boolean showJumpToOptions =  itemCount > visibleItemsInList;
+            menu.findItem(R.id.goTop).setVisible(showJumpToOptions);
+            menu.findItem(R.id.goBot).setVisible(showJumpToOptions);
+        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -155,11 +167,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 return true;
 
             case R.id.goBot:
-
-                if(mAdapter != null) {
-                    // go to bottom of the list
-                    getListView().smoothScrollToPosition(mAdapter.getCount());
-                }
+                // go to bottom of the list
+                getListView().smoothScrollToPosition(getItemCount());
                 return true;
 
             case R.id.deleteAll:
