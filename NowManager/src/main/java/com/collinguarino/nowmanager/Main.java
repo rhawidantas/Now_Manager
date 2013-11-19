@@ -108,8 +108,10 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // The delete all menu option shouldn't be selectable if there are no items to delete.
-        final MenuItem menuItem = menu.findItem(R.id.deleteAll);
-        menuItem.setEnabled(getItemCount() != 0);
+        menu.findItem(R.id.deleteAll).setEnabled(getItemCount() != 0);
+        menu.findItem(R.id.goTop).setEnabled(getItemCount() != 0);
+        menu.findItem(R.id.goBot).setEnabled(getItemCount() != 0);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
