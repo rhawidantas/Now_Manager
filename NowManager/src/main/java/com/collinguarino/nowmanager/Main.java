@@ -147,23 +147,17 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.newTimeCard:
-
                 createNewTimeCard();
-
                 return true;
 
             case R.id.goTop:
-
                 // go to top of the list
                 getListView().smoothScrollToPosition(0);
-
                 return true;
 
             case R.id.settings:
-
                 Intent intent = new Intent(getApplicationContext(), Settings.class);
                 startActivity(intent);
-
                 return true;
 
             case R.id.goBot:
@@ -172,42 +166,46 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 return true;
 
             case R.id.deleteAll:
-
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                builder1.setTitle("Delete All Logs?");
-                builder1.setMessage("This action cannot be undone.");
-                builder1.setCancelable(true);
-
-                // delete
-                builder1.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                NowManagerProvider provider = new NowManagerProvider();
-                                getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, null, null);
-                                hideKeyboard();
-                                Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-
-                // don't proceed
-                builder1.setNegativeButton("No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                dialog.cancel();
-
-                            }
-                        });
-
-                AlertDialog alert = builder1.create();
-                alert.show();
-
+                showDeleteAllConfirmation();
                 return true;
-
         }
         return true;
+    }
+
+    /**
+     * Helper method to show an ok/cancel alert to the user for deleting all items.
+     */
+    private void showDeleteAllConfirmation() {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setTitle("Delete All Logs?");
+        builder1.setMessage("This action cannot be undone.");
+        builder1.setCancelable(true);
+
+        // delete
+        builder1.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        NowManagerProvider provider = new NowManagerProvider();
+                        getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, null, null);
+                        hideKeyboard();
+                        Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+        // don't proceed
+        builder1.setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+
+                    }
+                });
+
+        AlertDialog alert = builder1.create();
+        alert.show();
     }
 
     private void createNewTimeCard() {
