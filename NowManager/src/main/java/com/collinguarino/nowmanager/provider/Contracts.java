@@ -1,13 +1,11 @@
 package com.collinguarino.nowmanager.provider;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Created by rszabo on 11/17/13.
- */
 public class Contracts {
 
     public static final class TimeCards implements BaseColumns {
@@ -20,6 +18,10 @@ public class Contracts {
          * A uri to the authority for this table
          */
         public static final Uri CONTENT_URI = Uri.parse("content://" + NowManagerProvider.AUTHORITY+"/"+TABLE_NAME);
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+                + "/timeCards";
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+                + "/timeCard";
 
         public static final String C_EVENT_NAME_INPUT = "eventNameInput";
         public static final String C_TIMESTAMP = "timestamp";

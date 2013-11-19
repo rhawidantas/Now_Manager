@@ -14,13 +14,15 @@ import com.collinguarino.nowmanager.provider.Contracts;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
 public class TimeCardAdapter extends CursorAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd a");
-    public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("k:m:s");
-    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("h:m:s");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM-dd a");
+    public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
+    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
 
     public TimeCardAdapter(Context context, Cursor c) {
@@ -41,15 +43,16 @@ public class TimeCardAdapter extends CursorAdapter {
         }
 
         // setting date and time
-        final Calendar datetime = Calendar.getInstance();
+        final Calendar datetimeCalendar = Calendar.getInstance();
         final long timestamp = cursor.getLong(Contracts.TimeCards.I_TIMESTAMP);
-        datetime.setTimeInMillis(timestamp);
+        datetimeCalendar.setTimeInMillis(timestamp);
+        final Date dateTime = datetimeCalendar.getTime();
         if (!DateFormat.is24HourFormat(mContext)) {
-            viewHolder.timeText.setText(TimeCardAdapter.TIME_FORMAT_STANDARD.format(datetime));
+            viewHolder.timeText.setText(TimeCardAdapter.TIME_FORMAT_STANDARD.format(dateTime));
         } else if (DateFormat.is24HourFormat(mContext)) {
-            viewHolder.timeText.setText(TimeCardAdapter.TIME_FORMAT_MILITARY.format(datetime));
+            viewHolder.timeText.setText(TimeCardAdapter.TIME_FORMAT_MILITARY.format(dateTime));
         }
-        viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(datetime.getTime()));
+        viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(dateTime));
     }
 
     @Override

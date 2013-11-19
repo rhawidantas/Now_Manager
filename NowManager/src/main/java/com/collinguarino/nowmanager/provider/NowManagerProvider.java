@@ -19,11 +19,6 @@ public class NowManagerProvider extends ContentProvider {
     private static final int TIME_CARD_ID = 2;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-            + "/now-manager";
-    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-            + "/now-manager";
-
     static {
         /*
          * Sets the integer value for multiple rows in time cards to 1. Notice that no wildcard is used in the path
@@ -45,14 +40,14 @@ public class NowManagerProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+    public synchronized Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         switch (sUriMatcher.match(uri)) {
             case TIME_CARDS:
                 qb.setTables(Contracts.TimeCards.TABLE_NAME);
                 if (TextUtils.isEmpty(sortOrder)) {
+                    // set a default sort order
                     sortOrder = "_ID ASC";
                 }
 
@@ -69,6 +64,7 @@ public class NowManagerProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         // Query the underlying database
         final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
@@ -79,19 +75,22 @@ public class NowManagerProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
-        String ret = getContext().getContentResolver().getType(Settings.System.CONTENT_URI);
-        return ret;
+    public synchronized String getType(Uri uri) {
+        return null;
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues contentValues) {
-        if (sUriMatcher.match(uri) != TIME_CARDS) {
-            throw new IllegalArgumentException("Unsupported URI: " + uri);
+    public synchronized Uri insert(Uri uri, ContentValues contentValues) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final long rowId;
+        switch (sUriMatcher.match(uri)) {
+            case TIME_CARDS:
+                rowId = db.insert(Contracts.TimeCards.TABLE_NAME, null, contentValues);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final long rowId = db.insert(Contracts.TimeCards.TABLE_NAME, null, contentValues);
         Uri result = null;
         if (rowId > 0) {
             result = ContentUris.withAppendedId(Contracts.TimeCards.CONTENT_URI, rowId);
@@ -101,7 +100,7 @@ public class NowManagerProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String where, String[] whereArgs) {
+    public synchronized int delete(Uri uri, String where, String[] whereArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
@@ -126,7 +125,7 @@ public class NowManagerProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
+    public synchronized int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
