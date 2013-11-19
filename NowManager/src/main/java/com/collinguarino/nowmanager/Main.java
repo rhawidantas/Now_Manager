@@ -176,7 +176,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                             public void onClick(DialogInterface dialog, int id) {
 
                                 NowManagerProvider provider = new NowManagerProvider();
-                                provider.delete(Contracts.TimeCards.CONTENT_URI, null, null);
+                                getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, null,null);
                                 hideKeyboard();
                                 Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
 
@@ -215,10 +215,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             //not a tally
             values = Contracts.TimeCards.getInsertValues(null, false);
         }
-        final Uri.Builder builder = new Uri.Builder();
-        builder.authority(Contracts.TimeCards.AUTHORITY);
-        builder.path(Contracts.TimeCards.TABLE_NAME);
-        provider.insert(builder.build(), values);
+        getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);
     }
 
     /**
