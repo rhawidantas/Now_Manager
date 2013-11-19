@@ -10,6 +10,7 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.collinguarino.nowmanager.model.TimeCard;
 import com.collinguarino.nowmanager.provider.Contracts;
 
 import java.text.SimpleDateFormat;
@@ -34,18 +35,19 @@ public class TimeCardAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        final ViewHolder viewHolder = (ViewHolder) view.getTag();
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
 
+        final TimeCard timeCard = new TimeCard(cursor);
         //set event name input
-        final String eventNameInput = cursor.getString(Contracts.TimeCards.I_EVENT_NAME_INPUT);
-        if(eventNameInput != null) {
-        viewHolder.eventNameInput.setText(eventNameInput);
+        if (timeCard.getEventNameInput() != null) {
+            viewHolder.eventNameInput.setText(timeCard.getEventNameInput());
+        } else {
+            viewHolder.eventNameInput.setText("");
         }
 
         // setting date and time
         final Calendar datetimeCalendar = Calendar.getInstance();
-        final long timestamp = cursor.getLong(Contracts.TimeCards.I_TIMESTAMP);
-        datetimeCalendar.setTimeInMillis(timestamp);
+        datetimeCalendar.setTimeInMillis(timeCard.getTimestamp());
         final Date dateTime = datetimeCalendar.getTime();
         if (!DateFormat.is24HourFormat(mContext)) {
             viewHolder.timeText.setText(TimeCardAdapter.TIME_FORMAT_STANDARD.format(dateTime));
@@ -67,7 +69,6 @@ public class TimeCardAdapter extends CursorAdapter {
 
         return view;
     }
-
 
     private class ViewHolder {
         EditText eventNameInput;
