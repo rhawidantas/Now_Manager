@@ -61,7 +61,7 @@ public class Contracts {
             if (eventNameInput != null) {
                 values.put(C_EVENT_NAME_INPUT, eventNameInput);
             }
-
+            values.put(C_TIMESTAMP, System.currentTimeMillis());
             values.put(C_IS_TALLY, isTally);
             return values;
         }
