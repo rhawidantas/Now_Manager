@@ -103,7 +103,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             // TODO only then will an Undo feature be possible.
             for (int position : reverseSortedPositions) {
                 final TimeCard timeCard = ((TimeCardAdapter)mAdapter).getTimeCard(position);
-                getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, Contracts.TimeCards._ID + " = " + timeCard.getId(), null);
+                if(timeCard != null) {
+                    getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, Contracts.TimeCards._ID + " = " + timeCard.getId(), null);
+                }
             }
         }
     };
