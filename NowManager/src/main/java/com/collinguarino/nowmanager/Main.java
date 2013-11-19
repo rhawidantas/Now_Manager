@@ -140,10 +140,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
             case R.id.goTop:
 
-                // go to top of scrollview
-                ScrollView scrollView = (ScrollView) findViewById(R.id.mainView);
-                scrollView.setSmoothScrollingEnabled(true);
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
+                // go to top of the list
+                getListView().smoothScrollToPosition(0);
 
                 return true;
 
@@ -156,11 +154,10 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
             case R.id.goBot:
 
-                // go to bottom of scrollview
-                scrollView = (ScrollView) findViewById(R.id.mainView);
-                scrollView.setSmoothScrollingEnabled(true);
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-
+                if(mAdapter != null) {
+                    // go to bottom of the list
+                    getListView().smoothScrollToPosition(mAdapter.getCount());
+                }
                 return true;
 
             case R.id.deleteAll:
@@ -329,7 +326,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // This is called when a new Loader needs to be created.  This
         // sample only has one Loader, so we don't care about the ID.
-        Uri baseUri = Contracts.TimeCards.CONTENT_URI;
+        final Uri baseUri = Contracts.TimeCards.CONTENT_URI;
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
