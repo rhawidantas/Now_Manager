@@ -27,7 +27,7 @@ public class NowManagerProvider extends ContentProvider {
         /*
          * Sets the code for a single row to 2. In this case, the "#" wildcard is used.
          */
-        sUriMatcher.addURI(AUTHORITY, Contracts.TimeCards.TABLE_NAME+"/#", TIME_CARD_ID);
+        sUriMatcher.addURI(AUTHORITY, Contracts.TimeCards.TABLE_NAME + "/#", TIME_CARD_ID);
     }
 
     private MainDatabaseHelper mOpenHelper;

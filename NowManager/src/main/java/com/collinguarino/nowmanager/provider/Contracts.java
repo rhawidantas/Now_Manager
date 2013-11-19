@@ -18,7 +18,7 @@ public class Contracts {
         /**
          * A uri to the authority for this table
          */
-        public static final Uri CONTENT_URI = Uri.parse("content://" + NowManagerProvider.AUTHORITY+"/"+TABLE_NAME);
+        public static final Uri CONTENT_URI = Uri.parse("content://" + NowManagerProvider.AUTHORITY + "/" + TABLE_NAME);
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
                 + "/timeCards";
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
@@ -52,8 +52,9 @@ public class Contracts {
 
         /**
          * Helper method to get a content values object for creating a new time card.
+         *
          * @param eventNameInput Default text (Optional)
-         * @param isTally Is this a tally or a standard event.
+         * @param isTally        Is this a tally or a standard event.
          * @return Non-null object
          */
         public static ContentValues getInsertValues(final String eventNameInput, final boolean isTally) {
@@ -68,21 +69,23 @@ public class Contracts {
 
         /**
          * Helper method to get all of the time cards that are classified as a tally
+         *
          * @return Cursor with all tally time cards.
          */
         public static Cursor getTallyTimeCards(final Context context) {
             final String[] projection = {_ID};
             final String selection = C_IS_TALLY + "=1";
-            return context.getContentResolver().query(CONTENT_URI,projection,selection,null,null);
+            return context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
         }
 
         /**
          * Helper method to get the count of all time cards that are classified as a tally
+         *
          * @return number of tally time cards.
          */
         public static int getTallyTimeCardCount(final Context context) {
             final Cursor cursor = getTallyTimeCards(context);
-            if(cursor == null) {
+            if (cursor == null) {
                 return 0;
             }
             return cursor.getCount();

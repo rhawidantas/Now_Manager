@@ -176,7 +176,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                             public void onClick(DialogInterface dialog, int id) {
 
                                 NowManagerProvider provider = new NowManagerProvider();
-                                getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, null,null);
+                                getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, null, null);
                                 hideKeyboard();
                                 Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
 
@@ -208,7 +208,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // If tally counter is selected from the actionbar dropdown then inflate numbers
         if (mActionBar.getSelectedNavigationIndex() == 1) {
             //get the number of tally rows
-            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this)+1;
+            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this) + 1;
             //is tally
             values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
         } else {
@@ -224,7 +224,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
      * @return The number of items that currently exist.
      */
     private int getItemCount() {
-        if(mAdapter == null) {
+        if (mAdapter == null) {
             return 0;
         }
         return mAdapter.getCount();
