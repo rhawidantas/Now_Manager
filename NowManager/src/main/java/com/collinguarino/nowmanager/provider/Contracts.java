@@ -15,12 +15,11 @@ public class Contracts {
         /**
          * The authority for the contacts provider
          */
-        public static final String AUTHORITY = "com.collinguarino.nowmanager.provider";
         public static final String TABLE_NAME = "timeCards";
         /**
          * A uri to the authority for this table
          */
-        public static final Uri CONTENT_URI = Uri.parse(AUTHORITY+"/"+TABLE_NAME);
+        public static final Uri CONTENT_URI = Uri.parse("content://" + NowManagerProvider.AUTHORITY+"/"+TABLE_NAME);
 
         public static final String C_EVENT_NAME_INPUT = "eventNameInput";
         public static final String C_TIMESTAMP = "timestamp";

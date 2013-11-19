@@ -1,6 +1,7 @@
 package com.collinguarino.nowmanager.provider;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -13,19 +14,25 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class NowManagerProvider extends ContentProvider {
+    static final String AUTHORITY = "com.collinguarino.nowmanager.provider";
     private static final int TIME_CARDS = 1;
     private static final int TIME_CARD_ID = 2;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+            + "/now-manager";
+    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+            + "/now-manager";
 
     static {
         /*
          * Sets the integer value for multiple rows in time cards to 1. Notice that no wildcard is used in the path
          */
-        sUriMatcher.addURI(Contracts.TimeCards.AUTHORITY, Contracts.TimeCards.TABLE_NAME, TIME_CARDS);
+        sUriMatcher.addURI(AUTHORITY, Contracts.TimeCards.TABLE_NAME, TIME_CARDS);
         /*
          * Sets the code for a single row to 2. In this case, the "#" wildcard is used.
          */
-        sUriMatcher.addURI(Contracts.TimeCards.AUTHORITY, Contracts.TimeCards.TABLE_NAME+"/#", TIME_CARD_ID);
+        sUriMatcher.addURI(AUTHORITY, Contracts.TimeCards.TABLE_NAME+"/#", TIME_CARD_ID);
     }
 
     private MainDatabaseHelper mOpenHelper;
