@@ -7,6 +7,18 @@
         android:icon="@drawable/addnew"/>
 
     <item
+        android:id="@+id/settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Settings"/>
+    
+    <item
+        android:id="@+id/deleteAll"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Remove All"/>
+
+    <item
         android:id="@+id/goTop"
         android:orderInCategory="100"
         android:showAsAction="never"
@@ -17,17 +29,5 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Oldest (Bottom)"/>
-
-    <item
-        android:id="@+id/deleteAll"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="Remove All"/>
-
-    <item
-        android:id="@+id/settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="Settings"/>
 
 </menu>
