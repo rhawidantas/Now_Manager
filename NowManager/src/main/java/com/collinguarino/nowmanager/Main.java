@@ -3,46 +3,40 @@ package com.collinguarino.nowmanager;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ListActivity;
+import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
-import android.text.format.DateFormat;
-import android.text.format.Time;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.collinguarino.nowmanager.provider.Contracts;
+import com.collinguarino.nowmanager.provider.NowManagerProvider;
 
-public class Main extends FragmentActivity implements ActionBar.OnNavigationListener {
+public class Main extends ListActivity implements ActionBar.OnNavigationListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final static String TAG = Main.class.getSimpleName();
     final Context context = this;
-    //TODO This should be a listview.
-    public LinearLayout mContainerView;
-    ActionBar actionBar;
+    private ActionBar mActionBar;
+
+    private TimeCardAdapter mAdapter;
 
     public static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
@@ -52,12 +46,13 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         setContentView(R.layout.main);
 
         // Set up the action bar to show a dropdown list.
-        actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        mActionBar = getActionBar();
+        mActionBar.setDisplayShowTitleEnabled(false);
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
 
         // Set up the dropdown list navigation in the action bar.
-        actionBar.setListNavigationCallbacks(
+        mActionBar.setListNavigationCallbacks(
                 // Specify a SpinnerAdapter to populate the dropdown list.
                 new ArrayAdapter<String>(
                         getActionBarThemedContextCompat(),
@@ -77,6 +72,18 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             getActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Create an empty adapter we will use to display the loaded data.
+        mAdapter = new TimeCardAdapter(this, null);
+        setListAdapter(mAdapter);
+
+        // Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getLoaderManager().initLoader(0, null, this);
     }
 
     /**
@@ -122,13 +129,12 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.newTimeFragment:
+            case R.id.newTimeCard:
 
-                inflateTimeCard();
+                createNewTimeCard();
 
                 return true;
 
@@ -169,8 +175,9 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
+                                NowManagerProvider provider = new NowManagerProvider();
+                                provider.delete(Contracts.TimeCards.CONTENT_URI, null, null);
                                 hideKeyboard();
-                                mContainerView.removeAllViews();
                                 Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
 
                             }
@@ -195,146 +202,35 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         return true;
     }
 
-    private void inflateTimeCard() {
-        // handling the inflation of a new timestamped card
-
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View rowView = inflater.inflate(R.layout.time_card, null);
-
-        final TextView dateText = (TextView) rowView.findViewById(R.id.dateText);
-        final TextView timeText = (TextView) rowView.findViewById(R.id.timeText);
-
-        //TODO Is this time variable used for anything?
-        Time time = new Time();
-        time.setToNow();
-
-        String ampm = "";
-
-        Calendar datetime = Calendar.getInstance();
-
-        if (datetime.get(Calendar.AM_PM) == Calendar.AM)
-            ampm = "AM";
-        else if (datetime.get(Calendar.AM_PM) == Calendar.PM)
-            ampm = "PM";
-
-        int hourString = Calendar.getInstance().get(Calendar.HOUR);
-        if (hourString == 0) {
-            hourString = 12;
-        }
-
-        int minuteString = Calendar.getInstance().get(Calendar.MINUTE);
-
-        int secondString = Calendar.getInstance().get(Calendar.SECOND);
-
-        if (!DateFormat.is24HourFormat(this)) {
-            if (secondString < 10) {
-                timeText.setText(hourString + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + "0" + secondString); // 12 hour version: add if statement on 24hr version
-            } else if (minuteString < 10) {
-                timeText.setText(hourString + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            } else if (secondString < 10 && minuteString < 10) {
-                timeText.setText(hourString + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + "0" + secondString); // 12 hour version: add if statement on 24hr version
-            } else {
-                timeText.setText(hourString + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-        } else if (DateFormat.is24HourFormat(this)) {
-
-            if (minuteString < 10) {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-            if (secondString < 10) {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":0" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-            if (secondString < 10 && minuteString < 10) {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":0" + secondString); // 12 hour version: add if statement on 24hr version
-            } else {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-        }
-
-        dateText.setText(new SimpleDateFormat("MM-dd").format(new Date()) + " " + ampm);
-
-        final CommonSwipeTouchListener onSwipeTouchListener = new CommonSwipeTouchListener(rowView);
-        final RelativeLayout timeCardFragmentLayout = (RelativeLayout) rowView.findViewById(R.id.timeCardFragmentLayout);
-        timeCardFragmentLayout.setOnTouchListener(onSwipeTouchListener);
-
-        final RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
-        cardBack.setOnTouchListener(onSwipeTouchListener);
-
-        // animation for popping in new card
-        AnimationSet set = new AnimationSet(true);
-
-        Animation animation = new AlphaAnimation(0.0f, 1.0f);
-        set.addAnimation(animation);
-
-        animation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF, 0.0f
-        );
-        animation.setDuration(500);
-        set.addAnimation(animation);
-        rowView.setAnimation(animation);
-
-        mContainerView = (LinearLayout) findViewById(R.id.parentView);
-
+    private void createNewTimeCard() {
+        final NowManagerProvider provider = new NowManagerProvider();
+        final ContentValues values;
         // If tally counter is selected from the actionbar dropdown then inflate numbers
-        if (actionBar.getSelectedNavigationIndex() == 1) {
-            final EditText eventNameInput = (EditText) rowView.findViewById(R.id.eventNameInput);
-            eventNameInput.setText(String.valueOf(mContainerView.getChildCount() + 1)); // gets index then adds one
+        if (mActionBar.getSelectedNavigationIndex() == 1) {
+            //get the number of tally rows
+            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount()+1;
+            //is tally
+            values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
+        } else {
+            //not a tally
+            values = Contracts.TimeCards.getInsertValues(null, false);
         }
-
-        mContainerView.addView(rowView, 0); //mContainerView.getChildCount() -1 for descending
-
-        Handler handler = new Handler();
-        final Runnable r = new Runnable() {
-            public void run() {
-                final ScrollView scrollView1 = (ScrollView) findViewById(R.id.mainView);
-                scrollView1.setSmoothScrollingEnabled(true);
-                scrollView1.fullScroll(View.FOCUS_UP);
-            }
-        };
-
-        handler.postDelayed(r, 300);
+        final Uri.Builder builder = new Uri.Builder();
+        builder.authority(Contracts.TimeCards.AUTHORITY);
+        builder.path(Contracts.TimeCards.TABLE_NAME);
+        provider.insert(builder.build(), values);
     }
 
     /**
      * Get the number of items that currently exist.
+     *
      * @return The number of items that currently exist.
      */
     private int getItemCount() {
-        if(mContainerView == null) {
+        if(mAdapter == null) {
             return 0;
         }
-        return mContainerView.getChildCount();
-    }
-
-    /**
-     * Common Swipe Touch Listener implementation
-     */
-    class CommonSwipeTouchListener extends OnSwipeTouchListener {
-
-        final View rowView;
-
-        public CommonSwipeTouchListener(final View rowView) {
-            this.rowView = rowView;
-        }
-
-        public void onSwipeRight() {
-            onSwipe();
-        }
-
-        public void onSwipeLeft() {
-            onSwipe();
-        }
-
-        /**
-         * Common swipe action.
-         */
-        private void onSwipe() {
-            Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-            // Deletes the fragment
-            hideKeyboard();
-            mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
-        }
+        return mAdapter.getCount();
     }
 
     @Override
@@ -423,12 +319,41 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
     public void hideKeyboard() {
         final View currentFocusedView = this.getCurrentFocus();
-        if(currentFocusedView == null) {
+        if (currentFocusedView == null) {
             return;
         }
         InputMethodManager inputManager = (InputMethodManager)
                 this.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        // This is called when a new Loader needs to be created.  This
+        // sample only has one Loader, so we don't care about the ID.
+        Uri baseUri = Contracts.TimeCards.CONTENT_URI;
+
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
+        return new CursorLoader(this, baseUri,
+                Contracts.TimeCards.SELECT_ALL_PROJECTION, null, null,
+                Contracts.TimeCards.C_TIMESTAMP + " DESC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        // Swap the new cursor in.  (The framework will take care of closing the
+        // old cursor once we return.)
+        mAdapter.swapCursor(cursor);
+        Log.v(TAG, "cursor size: " + (cursor != null ? cursor.getCount() : "null"));
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+        mAdapter.swapCursor(null);
     }
 }
