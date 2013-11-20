@@ -3,46 +3,40 @@ package com.collinguarino.nowmanager;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ListActivity;
+import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
-import android.text.format.DateFormat;
-import android.text.format.Time;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.collinguarino.nowmanager.model.TimeCard;
+import com.collinguarino.nowmanager.provider.Contracts;
+import com.collinguarino.nowmanager.provider.NowManagerProvider;
 
-public class Main extends FragmentActivity implements ActionBar.OnNavigationListener {
+public class Main extends ListActivity implements ActionBar.OnNavigationListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final static String TAG = Main.class.getSimpleName();
     final Context context = this;
-    //TODO This should be a listview.
-    public LinearLayout mContainerView;
-    ActionBar actionBar;
+    private ActionBar mActionBar;
+
+    private TimeCardAdapter mAdapter;
 
     public static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
@@ -52,12 +46,13 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         setContentView(R.layout.main);
 
         // Set up the action bar to show a dropdown list.
-        actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        mActionBar = getActionBar();
+        mActionBar.setDisplayShowTitleEnabled(false);
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
 
         // Set up the dropdown list navigation in the action bar.
-        actionBar.setListNavigationCallbacks(
+        mActionBar.setListNavigationCallbacks(
                 // Specify a SpinnerAdapter to populate the dropdown list.
                 new ArrayAdapter<String>(
                         getActionBarThemedContextCompat(),
@@ -77,7 +72,43 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             getActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
         }
+
+        // Create an empty adapter we will use to display the loaded data.
+        mAdapter = new TimeCardAdapter(this, null);
+        setListAdapter(mAdapter);
+        final ListView listView = getListView();
+        // Make the list dismissable by swipe.
+        SwipeDismissListViewTouchListener swipeDismissListViewTouchListener = new SwipeDismissListViewTouchListener(listView, listDismissCallbacks);
+        listView.setOnTouchListener(swipeDismissListViewTouchListener);
+        listView.setOnScrollListener(swipeDismissListViewTouchListener.makeScrollListener());
+
+        // Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getLoaderManager().initLoader(0, null, this);
     }
+
+    /**
+     * Callbacks for when list items are dismissed (by swipe).
+     */
+    private SwipeDismissListViewTouchListener.DismissCallbacks listDismissCallbacks = new SwipeDismissListViewTouchListener.DismissCallbacks() {
+        @Override
+        public boolean canDismiss(int position) {
+            //Return false here if the item at the position should not be dissmissable
+            return true;
+        }
+
+        @Override
+        public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+            // TODO Should flag items for deletion instead of a strict delete.
+            // TODO only then will an Undo feature be possible.
+            for (int position : reverseSortedPositions) {
+                final TimeCard timeCard = ((TimeCardAdapter)mAdapter).getTimeCard(position);
+                if(timeCard != null) {
+                    getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, Contracts.TimeCards._ID + " = " + timeCard.getId(), null);
+                }
+            }
+        }
+    };
 
     /**
      * Backward-compatible version of {@link ActionBar#getThemedContext()} that
@@ -101,240 +132,123 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // The delete all menu option shouldn't be selectable if there are no items to delete.
-        final MenuItem menuItem = menu.findItem(R.id.deleteAll);
-        menuItem.setEnabled(getItemCount() != 0);
+        final int itemCount = getItemCount();
+        final boolean shouldEnableButton = itemCount != 0;
+        menu.findItem(R.id.deleteAll).setEnabled(shouldEnableButton);
+        menu.findItem(R.id.goTop).setEnabled(shouldEnableButton);
+        menu.findItem(R.id.goBot).setEnabled(shouldEnableButton);
+
+        // The jump to top/bottom of the list buttons should only show when necessary.
+        // Hide the buttons if there aren't many items in the list, show the buttons if there are.
+        final ListView listView = getListView();
+        if(listView != null) {
+            final int visibleItemsInList = listView.getLastVisiblePosition() - listView.getFirstVisiblePosition() + 1;
+            final boolean showJumpToOptions =  itemCount > visibleItemsInList;
+            menu.findItem(R.id.goTop).setVisible(showJumpToOptions);
+            menu.findItem(R.id.goBot).setVisible(showJumpToOptions);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         // Serialize the current dropdown position.
-        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
-                getActionBar().getSelectedNavigationIndex());
-
+        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar().getSelectedNavigationIndex());
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.newTimeFragment:
-
-                inflateTimeCard();
-
+            case R.id.newTimeCard:
+                createNewTimeCard();
                 return true;
 
             case R.id.goTop:
-
-                // go to top of scrollview
-                ScrollView scrollView = (ScrollView) findViewById(R.id.mainView);
-                scrollView.setSmoothScrollingEnabled(true);
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
-
+                // go to top of the list
+                getListView().smoothScrollToPosition(0);
                 return true;
 
             case R.id.settings:
-
                 Intent intent = new Intent(getApplicationContext(), Settings.class);
                 startActivity(intent);
-
                 return true;
 
             case R.id.goBot:
-
-                // go to bottom of scrollview
-                scrollView = (ScrollView) findViewById(R.id.mainView);
-                scrollView.setSmoothScrollingEnabled(true);
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-
+                // go to bottom of the list
+                getListView().smoothScrollToPosition(getItemCount());
                 return true;
 
             case R.id.deleteAll:
-
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                builder1.setTitle("Delete All Logs?");
-                builder1.setMessage("This action cannot be undone.");
-                builder1.setCancelable(true);
-
-                // delete
-                builder1.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                hideKeyboard();
-                                mContainerView.removeAllViews();
-                                Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-
-                // don't proceed
-                builder1.setNegativeButton("No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                dialog.cancel();
-
-                            }
-                        });
-
-                AlertDialog alert = builder1.create();
-                alert.show();
-
+                showDeleteAllConfirmation();
                 return true;
-
         }
         return true;
     }
 
-    private void inflateTimeCard() {
-        // handling the inflation of a new timestamped card
+    /**
+     * Helper method to show an ok/cancel alert to the user for deleting all items.
+     */
+    private void showDeleteAllConfirmation() {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setTitle("Delete All Logs?");
+        builder1.setMessage("This action cannot be undone.");
+        builder1.setCancelable(true);
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View rowView = inflater.inflate(R.layout.time_card, null);
+        // delete
+        builder1.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-        final TextView dateText = (TextView) rowView.findViewById(R.id.dateText);
-        final TextView timeText = (TextView) rowView.findViewById(R.id.timeText);
+                        NowManagerProvider provider = new NowManagerProvider();
+                        getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, null, null);
+                        hideKeyboard();
+                        Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
 
-        //TODO Is this time variable used for anything?
-        Time time = new Time();
-        time.setToNow();
+                    }
+                });
 
-        String ampm = "";
+        // don't proceed
+        builder1.setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-        Calendar datetime = Calendar.getInstance();
+                        dialog.cancel();
 
-        if (datetime.get(Calendar.AM_PM) == Calendar.AM)
-            ampm = "AM";
-        else if (datetime.get(Calendar.AM_PM) == Calendar.PM)
-            ampm = "PM";
+                    }
+                });
 
-        int hourString = Calendar.getInstance().get(Calendar.HOUR);
-        if (hourString == 0) {
-            hourString = 12;
-        }
+        AlertDialog alert = builder1.create();
+        alert.show();
+    }
 
-        int minuteString = Calendar.getInstance().get(Calendar.MINUTE);
-
-        int secondString = Calendar.getInstance().get(Calendar.SECOND);
-
-        if (!DateFormat.is24HourFormat(this)) {
-            if (secondString < 10) {
-                timeText.setText(hourString + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + "0" + secondString); // 12 hour version: add if statement on 24hr version
-            } else if (minuteString < 10) {
-                timeText.setText(hourString + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            } else if (secondString < 10 && minuteString < 10) {
-                timeText.setText(hourString + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + "0" + secondString); // 12 hour version: add if statement on 24hr version
-            } else {
-                timeText.setText(hourString + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-        } else if (DateFormat.is24HourFormat(this)) {
-
-            if (minuteString < 10) {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-            if (secondString < 10) {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":0" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-            if (secondString < 10 && minuteString < 10) {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":0" + Calendar.getInstance().get(Calendar.MINUTE) + ":0" + secondString); // 12 hour version: add if statement on 24hr version
-            } else {
-                timeText.setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + secondString); // 12 hour version: add if statement on 24hr version
-            }
-        }
-
-        dateText.setText(new SimpleDateFormat("MM-dd").format(new Date()) + " " + ampm);
-
-        final CommonSwipeTouchListener onSwipeTouchListener = new CommonSwipeTouchListener(rowView);
-        final RelativeLayout timeCardFragmentLayout = (RelativeLayout) rowView.findViewById(R.id.timeCardFragmentLayout);
-        timeCardFragmentLayout.setOnTouchListener(onSwipeTouchListener);
-
-        final RelativeLayout cardBack = (RelativeLayout) rowView.findViewById(R.id.cardBack);
-        cardBack.setOnTouchListener(onSwipeTouchListener);
-
-        // animation for popping in new card
-        AnimationSet set = new AnimationSet(true);
-
-        Animation animation = new AlphaAnimation(0.0f, 1.0f);
-        set.addAnimation(animation);
-
-        animation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF, 0.0f
-        );
-        animation.setDuration(500);
-        set.addAnimation(animation);
-        rowView.setAnimation(animation);
-
-        mContainerView = (LinearLayout) findViewById(R.id.parentView);
-
+    private void createNewTimeCard() {
+        final NowManagerProvider provider = new NowManagerProvider();
+        final ContentValues values;
         // If tally counter is selected from the actionbar dropdown then inflate numbers
-        if (actionBar.getSelectedNavigationIndex() == 1) {
-            final EditText eventNameInput = (EditText) rowView.findViewById(R.id.eventNameInput);
-            eventNameInput.setText(String.valueOf(mContainerView.getChildCount() + 1)); // gets index then adds one
+        if (mActionBar.getSelectedNavigationIndex() == 1) {
+            //get the number of tally rows
+            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this) + 1;
+            //is tally
+            values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
+        } else {
+            //not a tally
+            values = Contracts.TimeCards.getInsertValues(null, false);
         }
-
-        mContainerView.addView(rowView, 0); //mContainerView.getChildCount() -1 for descending
-
-        Handler handler = new Handler();
-        final Runnable r = new Runnable() {
-            public void run() {
-                final ScrollView scrollView1 = (ScrollView) findViewById(R.id.mainView);
-                scrollView1.setSmoothScrollingEnabled(true);
-                scrollView1.fullScroll(View.FOCUS_UP);
-            }
-        };
-
-        handler.postDelayed(r, 300);
+        getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);
     }
 
     /**
      * Get the number of items that currently exist.
+     *
      * @return The number of items that currently exist.
      */
     private int getItemCount() {
-        if(mContainerView == null) {
+        if (mAdapter == null) {
             return 0;
         }
-        return mContainerView.getChildCount();
-    }
-
-    /**
-     * Common Swipe Touch Listener implementation
-     */
-    class CommonSwipeTouchListener extends OnSwipeTouchListener {
-
-        final View rowView;
-
-        public CommonSwipeTouchListener(final View rowView) {
-            this.rowView = rowView;
-        }
-
-        public void onSwipeRight() {
-            onSwipe();
-        }
-
-        public void onSwipeLeft() {
-            onSwipe();
-        }
-
-        /**
-         * Common swipe action.
-         */
-        private void onSwipe() {
-            Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-            // Deletes the fragment
-            hideKeyboard();
-            mContainerView.removeViewAt(mContainerView.indexOfChild(rowView));
-        }
+        return mAdapter.getCount();
     }
 
     @Override
@@ -423,12 +337,40 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
 
     public void hideKeyboard() {
         final View currentFocusedView = this.getCurrentFocus();
-        if(currentFocusedView == null) {
+        if (currentFocusedView == null) {
             return;
         }
         InputMethodManager inputManager = (InputMethodManager)
                 this.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        // This is called when a new Loader needs to be created.  This
+        // sample only has one Loader, so we don't care about the ID.
+        final Uri baseUri = Contracts.TimeCards.CONTENT_URI;
+
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
+        return new CursorLoader(this, baseUri,
+                Contracts.TimeCards.SELECT_ALL_PROJECTION, null, null,
+                Contracts.TimeCards.C_TIMESTAMP + " DESC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        // Swap the new cursor in.  (The framework will take care of closing the
+        // old cursor once we return.)
+        mAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+        mAdapter.swapCursor(null);
     }
 }
