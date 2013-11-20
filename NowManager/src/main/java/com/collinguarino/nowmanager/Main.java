@@ -39,8 +39,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     public int countWarning, spinnerIndex;
     private TimeCardAdapter mAdapter;
 
-    public static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,12 +74,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         // restores index state of action bar spinner
         getActionBar().setSelectedNavigationItem(spinnerIndex);
-
-       /* // restore the previously serialized current dropdown position.
-        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            getActionBar().setSelectedNavigationItem(
-                    savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
-        }*/
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new TimeCardAdapter(this, null);
@@ -172,13 +164,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         }
 
         return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // Serialize the current dropdown position.
-        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar().getSelectedNavigationIndex());
     }
 
     @Override
@@ -292,7 +277,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 .getDefaultSharedPreferences(this);
 
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("spinnerIndex", 0);
+        editor.putInt("spinnerIndex", mActionBar.getSelectedNavigationIndex());
         editor.commit();
 
         return true;
