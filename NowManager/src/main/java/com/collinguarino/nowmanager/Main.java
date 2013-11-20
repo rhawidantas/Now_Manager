@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +36,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private final static String TAG = Main.class.getSimpleName();
     final Context context = this;
     private ActionBar mActionBar;
-
+    public int countWarning;
     private TimeCardAdapter mAdapter;
 
     public static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
@@ -43,6 +44,12 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+
+        //countWarning = preferences.getInt("countWarning", 0);
+
         setContentView(R.layout.main);
 
         // Set up the action bar to show a dropdown list.
@@ -87,6 +94,16 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         getLoaderManager().initLoader(0, null, this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+
+        //countWarning = preferences.getInt("countWarning", 0);
+    }
+
     /**
      * Callbacks for when list items are dismissed (by swipe).
      */
@@ -105,6 +122,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 final TimeCard timeCard = ((TimeCardAdapter)mAdapter).getTimeCard(position);
                 if(timeCard != null) {
                     getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, Contracts.TimeCards._ID + " = " + timeCard.getId(), null);
+                    Toast.makeText(context, "Log Deleted", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -232,6 +250,17 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this) + 1;
             //is tally
             values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
+
+            SharedPreferences preferences = PreferenceManager
+                    .getDefaultSharedPreferences(this);
+
+            countWarning = Integer.parseInt(preferences.getString("countWarning", "0"));
+
+            // Tally limit has been reached
+            if (countWarning == Integer.valueOf(tallyCount) && countWarning != 0) {
+                showCountWarning();
+            }
+
         } else {
             //not a tally
             values = Contracts.TimeCards.getInsertValues(null, false);
@@ -333,6 +362,45 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         });
 
         dialog.show();
+    }
+
+    /**
+     * Helper method to show the tally count warning after a user specified integer
+     */
+    private void showCountWarning() {
+        AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
+                this);
+
+        alertDialog2.setTitle("Count Limit Reached");
+        alertDialog2.setMessage("Your defined limit of " + countWarning + " has been reached.");
+
+        // lets the user continue, keeps the count limit for next time
+        alertDialog2.setPositiveButton("Continue",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.cancel();
+
+                    }
+                });
+
+        // removes the limit set in preferences and allows the user to continue
+        alertDialog2.setNegativeButton("Remove Limit",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        SharedPreferences preferences = PreferenceManager
+                                .getDefaultSharedPreferences(context);
+
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("countWarning", "0");
+                        editor.commit();
+
+                        Toast.makeText(context, "Count Limit Reset", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+        alertDialog2.show();
     }
 
     public void hideKeyboard() {

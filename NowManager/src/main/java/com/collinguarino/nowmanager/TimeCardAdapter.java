@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.collinguarino.nowmanager.model.TimeCard;
-import com.collinguarino.nowmanager.provider.Contracts;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,6 +19,7 @@ import java.util.Date;
 public class TimeCardAdapter extends CursorAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
+    private int countLimit;
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd a");
     public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");

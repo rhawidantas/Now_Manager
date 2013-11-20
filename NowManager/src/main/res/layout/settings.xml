@@ -2,31 +2,17 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
-    <!--<PreferenceCategory android:title="Tally Counter Preferences">
-
-        <CheckBoxPreference
-            android:title="Number suffixes"
-            android:defaultValue="true"
-            android:summary="1st, 2nd, 3rd, 4th, 5th (instead of 1, 2, 3, 4, 5)"
-            android:key="numberSuffixes" />
+    <PreferenceCategory android:title="Tally Counter Preferences">
 
         <EditTextPreference
-            android:defaultValue="1"
-            android:key="defaultSplit"
+            android:defaultValue="0"
+            android:key="countWarning"
             android:title="Count Warning"
-            android:summary="Display a warning after a specified integer"
+            android:summary="Display a warning on a specified number (zero to disable)"
             android:inputType="number"
             android:maxLength="3"/>
 
-        <ListPreference
-            android:title="Warning Method"
-            android:key="ROUNDING_OPTION"
-            android:summary="Select count warning preference"
-            android:defaultValue="1" />
-            android:entries="@array/need_to_create"
-            android:entryValues="@array/need_to_create"
-
-    </PreferenceCategory>-->
+    </PreferenceCategory>
 
 
     <PreferenceCategory android:title="About">
