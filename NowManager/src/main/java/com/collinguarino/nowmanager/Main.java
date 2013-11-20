@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +34,6 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class Main extends FragmentActivity implements ActionBar.OnNavigationListener {
 
@@ -204,9 +202,9 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
         final TextView dateText = (TextView) rowView.findViewById(R.id.dateText);
         final TextView timeText = (TextView) rowView.findViewById(R.id.timeText);
 
-        //TODO Is this time variable used for anything?
+        /*//TODO Is this time variable used for anything?
         Time time = new Time();
-        time.setToNow();
+        time.setToNow();*/
 
         String ampm = "";
 
@@ -251,7 +249,10 @@ public class Main extends FragmentActivity implements ActionBar.OnNavigationList
             }
         }
 
-        dateText.setText(new SimpleDateFormat("MM-dd").format(new Date()) + " " + ampm);
+        SimpleDateFormat month_date = new SimpleDateFormat("MMM");
+        String month_name = month_date.format(datetime.getTime());
+
+        dateText.setText(String.valueOf(month_name + " " + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + " " + ampm));
 
         final CommonSwipeTouchListener onSwipeTouchListener = new CommonSwipeTouchListener(rowView);
         final RelativeLayout timeCardFragmentLayout = (RelativeLayout) rowView.findViewById(R.id.timeCardFragmentLayout);
