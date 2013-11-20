@@ -36,7 +36,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private final static String TAG = Main.class.getSimpleName();
     final Context context = this;
     private ActionBar mActionBar;
-    public int countWarning;
+    public int countWarning, spinnerIndex;
     private TimeCardAdapter mAdapter;
 
     public static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
@@ -48,7 +48,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         SharedPreferences preferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
 
-        //countWarning = preferences.getInt("countWarning", 0);
+        spinnerIndex = preferences.getInt("spinnerIndex", 0);
 
         setContentView(R.layout.main);
 
@@ -74,11 +74,14 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         app_launched(this);
 
-        // restore the previously serialized current dropdown position.
+        // restores index state of action bar spinner
+        getActionBar().setSelectedNavigationItem(spinnerIndex);
+
+       /* // restore the previously serialized current dropdown position.
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
             getActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
-        }
+        }*/
 
         // Create an empty adapter we will use to display the loaded data.
         mAdapter = new TimeCardAdapter(this, null);
@@ -101,7 +104,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         SharedPreferences preferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
 
-        //countWarning = preferences.getInt("countWarning", 0);
+        spinnerIndex = preferences.getInt("spinnerIndex", 0);
+
+        getActionBar().setSelectedNavigationItem(spinnerIndex);
     }
 
     /**
@@ -282,6 +287,13 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("spinnerIndex", 0);
+        editor.commit();
 
         return true;
     }
