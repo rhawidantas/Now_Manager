@@ -5,8 +5,8 @@
     android:versionName="1.2" >
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="15"
+        android:targetSdkVersion="19" />
 
     <application
         android:allowBackup="true"
@@ -27,10 +27,14 @@
 
         <activity
             android:name="com.collinguarino.nowmanager.Settings"
-            android:label="Settings      "
+            android:label="Settings"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:parentActivityName="com.collinguarino.nowmanager.Main"/>
+        
+        <provider
+            android:authorities="com.collinguarino.nowmanager.provider"
+            android:name=".provider.NowManagerProvider"/>
 
     </application>
 
