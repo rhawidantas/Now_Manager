@@ -15,12 +15,12 @@
         android:theme="@style/AppTheme" >
 
         <!--Widget Receiver-->
-        <receiver android:name="com.collinguarino.nowmanager.WidgetProvider" android:label="Now Manager">
+        <receiver android:name="com.collinguarino.nowmanager.WidgetProvider" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                android:resource="@layout/widget_manifest" />
+                android:resource="@xml/widget_manifest" />
         </receiver>
 
         <activity
@@ -40,10 +40,19 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:parentActivityName="com.collinguarino.nowmanager.Main"/>
-        
+
+        <service android:name=".ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <!--
+            FIXME: The provider is being exported for testing.
+              This MUST be replaced with grantUriPermissions mechanism
+         -->
         <provider
             android:authorities="com.collinguarino.nowmanager.provider"
-            android:name=".provider.NowManagerProvider"/>
+            android:name=".provider.NowManagerProvider"
+            android:exported="true"/>
 
     </application>
 
