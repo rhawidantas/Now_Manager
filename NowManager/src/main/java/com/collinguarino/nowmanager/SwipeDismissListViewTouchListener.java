@@ -24,6 +24,7 @@ package com.collinguarino.nowmanager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -78,6 +79,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     private long mAnimationTime;
 
     // Fixed properties
+    private Context context;
     private ListView mListView;
     private DismissCallbacks mCallbacks;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
@@ -172,6 +174,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+
         if (mViewWidth < 2) {
             mViewWidth = mListView.getWidth();
         }

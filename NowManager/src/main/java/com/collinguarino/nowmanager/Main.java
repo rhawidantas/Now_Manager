@@ -231,7 +231,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         alert.show();
     }
 
-    private void createNewTimeCard() {
+    public void createNewTimeCard() {
         final NowManagerProvider provider = new NowManagerProvider();
         final ContentValues values;
         // If tally counter is selected from the actionbar dropdown then inflate numbers
