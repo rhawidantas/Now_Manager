@@ -1,6 +1,7 @@
 package com.collinguarino.nowmanager;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -17,11 +18,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -38,6 +42,10 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private ActionBar mActionBar;
     public int countWarning, spinnerIndex;
     private TimeCardAdapter mAdapter;
+
+    // Contextual action bar
+    ActionMode mActionMode;
+    Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +92,85 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         listView.setOnTouchListener(swipeDismissListViewTouchListener);
         listView.setOnScrollListener(swipeDismissListViewTouchListener.makeScrollListener());
 
+        registerForContextMenu(listView);
+
+        // ISSUE: EditText is taking the long press, not the entire listView row
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (mActionMode != null) {
+                    return false;
+                }
+
+                // Start the CAB using the ActionMode.Callback defined above
+                mActionMode = Main.this.startActionMode(mActionModeCallback);
+                view.setSelected(true);
+                //view.setBackgroundColor(Color.RED);
+                return true;
+
+            }
+        });
+
+
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         getLoaderManager().initLoader(0, null, this);
     }
+
+    /**
+     * Contextual action bar
+     * TODO: Share events, change background color, set reminder, delete log
+     */
+    final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.contextual, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // Actions on contextual action bar once inflated
+            switch (item.getItemId()) {
+                case R.id.share:
+
+
+                    // DOES NOT WORK : how do I return the value of the selected TimeCard event name and date information?
+                    String totalOutput = ("EventName " + "DateInfo" + " -- sent from Now Manager");
+
+                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String shareBody = totalOutput;
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                    startActivity(Intent.createChooser(sharingIntent, "Share Log With:"));
+
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                case R.id.reminder:
+
+                    // set reminder - open dialog to choose time from event
+
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+        }
+    };
 
     @Override
     protected void onResume() {
@@ -438,4 +521,5 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // longer using it.
         mAdapter.swapCursor(null);
     }
+
 }

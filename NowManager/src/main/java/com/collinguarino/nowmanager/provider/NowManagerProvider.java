@@ -68,7 +68,7 @@ public class NowManagerProvider extends ContentProvider {
 
         // Query the underlying database
         final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-        // Notify the context's ContentResolver if the cursor result set changes
+        // Notify the contextual's ContentResolver if the cursor result set changes
         c.setNotificationUri(getContext().getContentResolver(), uri);
         // Return the cursor to the result set
         return c;

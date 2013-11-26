@@ -33,7 +33,7 @@ public class TimeCardAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
