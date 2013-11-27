@@ -42,6 +42,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private ActionBar mActionBar;
     public int countWarning, spinnerIndex;
     private TimeCardAdapter mAdapter;
+    String defaultEventName;
 
     // Contextual action bar
     ActionMode mActionMode;
@@ -87,10 +88,12 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         mAdapter = new TimeCardAdapter(this, null);
         setListAdapter(mAdapter);
         final ListView listView = getListView();
+        listView.setLongClickable(true);
         // Make the list dismissable by swipe.
         SwipeDismissListViewTouchListener swipeDismissListViewTouchListener = new SwipeDismissListViewTouchListener(listView, listDismissCallbacks);
         listView.setOnTouchListener(swipeDismissListViewTouchListener);
         listView.setOnScrollListener(swipeDismissListViewTouchListener.makeScrollListener());
+
 
         registerForContextMenu(listView);
 
@@ -145,7 +148,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
 
                     // DOES NOT WORK : how do I return the value of the selected TimeCard event name and date information?
-                    String totalOutput = ("EventName " + "DateInfo" + " -- sent from Now Manager");
+                    String totalOutput = ("This feature doesn't work yet, check in later :)");
 
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
@@ -317,6 +320,14 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     public void createNewTimeCard() {
         final NowManagerProvider provider = new NowManagerProvider();
         final ContentValues values;
+
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+
+        countWarning = Integer.parseInt(preferences.getString("countWarning", "0"));
+
+        defaultEventName = String.valueOf(preferences.getString("defaultEventName", ""));
+
         // If tally counter is selected from the actionbar dropdown then inflate numbers
         if (mActionBar.getSelectedNavigationIndex() == 1) {
             //get the number of tally rows
@@ -324,18 +335,17 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             //is tally
             values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
 
-            SharedPreferences preferences = PreferenceManager
-                    .getDefaultSharedPreferences(this);
-
-            countWarning = Integer.parseInt(preferences.getString("countWarning", "0"));
-
             // Tally limit has been reached
             if (countWarning == Integer.valueOf(tallyCount) && countWarning != 0) {
                 showCountWarning();
             }
 
-        } else {
+        // If there is a defined default event name, use it
+        } else if (defaultEventName != "") {
             //not a tally
+            values = Contracts.TimeCards.getInsertValues(defaultEventName, false);
+        // No default event name, proceed as normal without preferences
+        } else {
             values = Contracts.TimeCards.getInsertValues(null, false);
         }
         getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);

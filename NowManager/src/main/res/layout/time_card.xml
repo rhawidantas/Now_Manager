@@ -48,7 +48,8 @@
                 android:id="@+id/dateText"
                 android:layout_below="@+id/imageButton"
                 android:layout_alignRight="@+id/timeOfDayText"
-                android:typeface="monospace" />
+                android:typeface="monospace"
+                android:focusable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,27 +61,10 @@
                 android:layout_alignBottom="@+id/textView"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/textView"
-                android:typeface="monospace" />
+                android:typeface="monospace"
+                android:focusable="false" />
 
         </LinearLayout>
 
     </RelativeLayout>
-
-
-    <!--Back of the card layout-->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:visibility="gone"
-        android:id="@+id/cardBack">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="This is the back of the card!"
-            android:id="@+id/textView" />
-
-    </RelativeLayout>
-
 </LinearLayout>

@@ -2,20 +2,32 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
-    <PreferenceCategory android:title="Tally Counter Preferences">
+
+    <PreferenceCategory android:title="Event Logs">
+
+        <EditTextPreference
+            android:title="Default Event Name"
+            android:defaultValue=""
+            android:key="defaultEventName"
+            android:summary="Preset event title for new logs."/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Tally Counter">
 
         <EditTextPreference
             android:defaultValue="0"
             android:key="countWarning"
             android:title="Count Warning"
-            android:summary="Display a warning on a specified number (zero to disable)"
+            android:summary="Display a warning on a specified number (zero to disable)."
             android:inputType="number"
             android:maxLength="3"/>
 
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="About">
+<!--    <PreferenceCategory android:title="About">
 
         <Preference android:title="Version 1.2"
             android:summary="Tap to rate this version on the Google Play Store. All feedback is appreciated."
@@ -24,6 +36,6 @@
                 android:data="https://play.google.com/store/apps/details?id=com.collinguarino.nowmanager" />
         </Preference>
 
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 
 </PreferenceScreen>
