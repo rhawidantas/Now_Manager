@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.collinguarino.nowmanager.model.TimeCard;
+import com.collinguarino.nowmanager.provider.Contracts;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,7 +36,7 @@ public class TimeCardAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
 
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        final ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         final TimeCard timeCard = new TimeCard(cursor);
         //set event name input
@@ -44,6 +45,21 @@ public class TimeCardAdapter extends CursorAdapter {
         } else {
             viewHolder.eventNameInput.setText("");
         }
+
+        // set focus listener.
+        // This needs to be done here instead of on create to make sure data and views line up properly.
+        viewHolder.eventNameInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    // focus is gone, save the text.
+                    mContext.getContentResolver().update(Contracts.TimeCards.CONTENT_URI,
+                            Contracts.TimeCards.getUpdateValues(viewHolder.eventNameInput.getText().toString()),
+                            Contracts.TimeCards._ID + " = " + timeCard.getId(),
+                            null);
+                }
+            }
+        });
 
         // setting date and time
         final Calendar datetimeCalendar = Calendar.getInstance();
@@ -78,6 +94,7 @@ public class TimeCardAdapter extends CursorAdapter {
 
     /**
      * Helper method to get a TimeCard object from this adapter at a position.
+     *
      * @param position Position to get timecard from
      * @return A TimeCard object or null if the position is invalid.
      */
@@ -85,7 +102,7 @@ public class TimeCardAdapter extends CursorAdapter {
         final Cursor cursor = getCursor();
         TimeCard timeCard = null;
 
-        if(cursor.moveToPosition(position)) {
+        if (cursor.moveToPosition(position)) {
             timeCard = new TimeCard(cursor);
         }
 
