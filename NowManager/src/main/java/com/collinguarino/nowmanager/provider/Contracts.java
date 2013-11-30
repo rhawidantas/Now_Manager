@@ -68,6 +68,17 @@ public class Contracts {
         }
 
         /**
+         * Helper method to build a content values object to update a time card.
+         * @param eventNameInput event name text
+         * @return Non-null object.
+         */
+        public static ContentValues getUpdateValues(final String eventNameInput) {
+            final ContentValues values = new ContentValues();
+            values.put(C_EVENT_NAME_INPUT, eventNameInput);
+            return values;
+        }
+
+        /**
          * Helper method to get all of the time cards that are classified as a tally
          *
          * @return Cursor with all tally time cards.
