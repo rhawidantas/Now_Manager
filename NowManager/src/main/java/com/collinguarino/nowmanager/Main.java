@@ -89,6 +89,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         setListAdapter(mAdapter);
         final ListView listView = getListView();
         listView.setLongClickable(true);
+        listView.setItemsCanFocus(true);
         // Make the list dismissable by swipe.
         SwipeDismissListViewTouchListener swipeDismissListViewTouchListener = new SwipeDismissListViewTouchListener(listView, listDismissCallbacks);
         listView.setOnTouchListener(swipeDismissListViewTouchListener);
