@@ -6,6 +6,8 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,11 +28,14 @@ public class TimeCardAdapter extends CursorAdapter {
     public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
     public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
+    final Animation mSlideInAnimation;
+
 
     public TimeCardAdapter(Context context, Cursor c) {
         super(context, c);
         mInflater = LayoutInflater.from(context);
         mContext = context;
+        mSlideInAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_top_to_bottom);
     }
 
     @Override
@@ -71,6 +76,15 @@ public class TimeCardAdapter extends CursorAdapter {
             viewHolder.timeText.setText(TimeCardAdapter.TIME_FORMAT_MILITARY.format(dateTime));
         }
         viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(dateTime));
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        final View view = super.getView(position, convertView, parent);
+        if (position == 0) {
+            view.startAnimation(mSlideInAnimation);
+        }
+        return view;
     }
 
     @Override
