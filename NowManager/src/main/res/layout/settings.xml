@@ -2,6 +2,29 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
+    <PreferenceCategory android:title="Preferences">
+
+
+        <CheckBoxPreference
+            android:title="Volume Keys"
+            android:summary="Use volume up or down to add a log."
+            android:key="volumeKeys"
+            android:defaultValue="false"/>
+
+        <CheckBoxPreference
+            android:title="Vibrate On Press"
+            android:summary="Vibrate when a new log is added."
+            android:key="vibrateOn"
+            android:defaultValue="false"/>
+
+        <CheckBoxPreference
+            android:title="Screen Rotation"
+            android:summary="Allow portait and landscape orientation."
+            android:key="screenRotation"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Event Logs">
 
         <EditTextPreference
@@ -18,7 +41,7 @@
             android:defaultValue="0"
             android:key="countWarning"
             android:title="Count Warning"
-            android:summary="Display a warning on a specified number (zero to disable)."
+            android:summary="Display a warning on a number (zero to disable)."
             android:inputType="number"
             android:maxLength="3"/>
 

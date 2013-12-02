@@ -81,9 +81,11 @@ public class TimeCardAdapter extends CursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final View view = super.getView(position, convertView, parent);
-        if (position == 0) {
+        // This animation is called when scrolling to the top and on time card deletion.
+        // Triggered too often, temporarily removed from release.
+        /*if (position == 0) {
             view.startAnimation(mSlideInAnimation);
-        }
+        }*/
         return view;
     }
 

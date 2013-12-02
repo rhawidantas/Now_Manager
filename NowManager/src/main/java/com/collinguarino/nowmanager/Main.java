@@ -13,12 +13,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,6 +51,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     ActionMode mActionMode;
     Activity mActivity;
 
+    // Preferences
+    boolean volumeKeys, vibrateOn, screenRotation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +62,18 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 .getDefaultSharedPreferences(this);
 
         spinnerIndex = preferences.getInt("spinnerIndex", 0);
+
+        volumeKeys = preferences.getBoolean("volumeKeys", false);
+
+        vibrateOn = preferences.getBoolean("vibrateOn", false);
+
+        screenRotation = preferences.getBoolean("screenRotation", true);
+
+        if (screenRotation) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        }
 
         setContentView(R.layout.main);
 
@@ -123,6 +141,20 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         getLoaderManager().initLoader(0, null, this);
     }
 
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (volumeKeys) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                createNewTimeCard();
+                return true;
+            } else {
+                return super.onKeyDown(keyCode, event);
+            }
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
     /**
      * Contextual action bar
      * TODO: Share events, change background color, set reminder, delete log
@@ -184,6 +216,10 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 .getDefaultSharedPreferences(this);
 
         spinnerIndex = preferences.getInt("spinnerIndex", 0);
+
+        volumeKeys = preferences.getBoolean("volumeKeys", false);
+
+        vibrateOn = preferences.getBoolean("vibrateOn", false);
 
         getActionBar().setSelectedNavigationItem(spinnerIndex);
     }
@@ -350,6 +386,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             values = Contracts.TimeCards.getInsertValues(null, false);
         }
         getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);
+        if (vibrateOn) {
+            ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
+        }
     }
 
     /**
