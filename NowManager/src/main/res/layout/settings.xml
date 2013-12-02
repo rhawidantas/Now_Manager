@@ -19,7 +19,7 @@
 
         <CheckBoxPreference
             android:title="Screen Rotation"
-            android:summary="Allow portait and landscape orientation."
+            android:summary="Allow orientation change."
             android:key="screenRotation"
             android:defaultValue="true"/>
 

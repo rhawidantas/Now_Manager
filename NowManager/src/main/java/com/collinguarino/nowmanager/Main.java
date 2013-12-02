@@ -27,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -74,6 +75,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.main);
 
@@ -220,6 +223,16 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         volumeKeys = preferences.getBoolean("volumeKeys", false);
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
+
+        screenRotation = preferences.getBoolean("screenRotation", true);
+
+        if (screenRotation) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        }
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         getActionBar().setSelectedNavigationItem(spinnerIndex);
     }
