@@ -1,6 +1,7 @@
 package com.collinguarino.nowmanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -66,6 +67,18 @@ public class TimeCardAdapter extends CursorAdapter {
             }
         });
 
+        viewHolder.eventNameInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String input = viewHolder.eventNameInput.getText().toString();
+                Intent textEditIntent = new Intent(mContext,  TextInput.class);
+                textEditIntent.putExtra("URL", input);
+                mContext.startActivity(textEditIntent);
+
+            }
+        });
+
         // setting date and time
         final Calendar datetimeCalendar = Calendar.getInstance();
         datetimeCalendar.setTimeInMillis(timeCard.getTimestamp());
@@ -76,6 +89,8 @@ public class TimeCardAdapter extends CursorAdapter {
             viewHolder.timeText.setText(TimeCardAdapter.TIME_FORMAT_MILITARY.format(dateTime));
         }
         viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(dateTime));
+
+
     }
 
     @Override

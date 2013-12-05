@@ -8,7 +8,7 @@
     android:paddingBottom="10dp"
     tools:context=".Main"
     android:background="#eeeeee"
-    android:orientation="horizontal">
+    android:orientation="horizontal" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,7 +29,8 @@
             android:layout_toLeftOf="@+id/dateLayout"
             android:layout_marginRight="5dp"
             android:hint="Untitled Event"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:longClickable="false"/>
 
         <LinearLayout
             android:orientation="vertical"

@@ -15,6 +15,7 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ import com.collinguarino.nowmanager.model.TimeCard;
 import com.collinguarino.nowmanager.provider.Contracts;
 import com.collinguarino.nowmanager.provider.NowManagerProvider;
 
+import java.text.SimpleDateFormat;
+
 public class Main extends ListActivity implements ActionBar.OnNavigationListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static String TAG = Main.class.getSimpleName();
@@ -51,6 +54,10 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     // Contextual action bar
     ActionMode mActionMode;
     Activity mActivity;
+
+    // For time elapsed label
+    public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
+    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
     // Preferences
     boolean volumeKeys, vibrateOn, screenRotation;
@@ -116,7 +123,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         listView.setOnTouchListener(swipeDismissListViewTouchListener);
         listView.setOnScrollListener(swipeDismissListViewTouchListener.makeScrollListener());
 
-
         registerForContextMenu(listView);
 
         // ISSUE: EditText is taking the long press, not the entire listView row
@@ -132,12 +138,11 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 // Start the CAB using the ActionMode.Callback defined above
                 mActionMode = Main.this.startActionMode(mActionModeCallback);
                 view.setSelected(true);
-                //view.setBackgroundColor(Color.RED);
+                view.setBackgroundColor(Color.RED);
                 return true;
 
             }
         });
-
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
@@ -402,6 +407,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         if (vibrateOn) {
             ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
         }
+
     }
 
     /**

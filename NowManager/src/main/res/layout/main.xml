@@ -3,7 +3,8 @@
     android:layout_height="fill_parent"
     android:id="@+id/mainView"
     android:background="#EEEEEE"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants" >
 
     <com.collinguarino.nowmanager.OverScrollListView
         android:id="@android:id/list"
