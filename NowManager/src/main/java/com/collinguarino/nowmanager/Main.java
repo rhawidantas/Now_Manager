@@ -15,7 +15,6 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -138,7 +137,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 // Start the CAB using the ActionMode.Callback defined above
                 mActionMode = Main.this.startActionMode(mActionModeCallback);
                 view.setSelected(true);
-                view.setBackgroundColor(Color.RED);
+                //view.setBackgroundColor(Color.RED); // for touch radius testing purposes
                 return true;
 
             }

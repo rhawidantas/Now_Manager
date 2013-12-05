@@ -8,22 +8,49 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp">
 
-    <EditText
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/textInput"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:background="@android:color/transparent"
-        android:hint="Enter a title for this log."
-        android:gravity="start"/>
+        android:weightSum="5"
+        android:orientation="vertical">
 
-    <!--I'm not sure why, but it's required to have a listview here-->
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:drawSelectorOnTop="false"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="M-D AM/PM"
+            android:layout_gravity="center"
+            android:id="@+id/dateText"
+            android:layout_below="@+id/imageButton"
+            android:layout_alignRight="@+id/timeOfDayText"
+            android:typeface="monospace"
+            android:focusable="false"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="00:00:00"
+            android:layout_gravity="center"
+            android:id="@+id/timeText"
+            android:layout_alignBottom="@+id/textView"
+            android:layout_toRightOf="@+id/textView"
+            android:typeface="monospace"
+            android:focusable="false"
+            android:layout_marginTop="10dp"/>
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:id="@+id/textInput"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:hint="Enter a label for this log."
+            android:layout_weight="4"
+            android:layout_marginTop="16dp"
+            android:gravity="center|top"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

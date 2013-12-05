@@ -8,7 +8,8 @@
     android:paddingBottom="10dp"
     tools:context=".Main"
     android:background="#eeeeee"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants" >
 
     <RelativeLayout
         android:layout_width="match_parent"
