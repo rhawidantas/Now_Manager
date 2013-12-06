@@ -60,6 +60,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
     // Preferences
     boolean volumeKeys, vibrateOn, screenRotation;
+    //int countInterval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -382,10 +383,13 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         defaultEventName = String.valueOf(preferences.getString("defaultEventName", ""));
 
+        // cannot use countInterval because getTallyTimeCardCount() doesn't return the previous count
+        //countInterval = Integer.parseInt(preferences.getString("countInterval", "1"));
+
         // If tally counter is selected from the actionbar dropdown then inflate numbers
         if (mActionBar.getSelectedNavigationIndex() == 1) {
             //get the number of tally rows
-            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this) + 1;
+            final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this) + 1; // + countInterval
             //is tally
             values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
 
@@ -406,7 +410,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         if (vibrateOn) {
             ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
         }
-
     }
 
     /**
@@ -589,5 +592,4 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // longer using it.
         mAdapter.swapCursor(null);
     }
-
 }

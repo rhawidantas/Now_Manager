@@ -37,13 +37,21 @@
 
     <PreferenceCategory android:title="Tally Counter">
 
+        <!--<EditTextPreference
+            android:title="Count Interval"
+            android:defaultValue="1"
+            android:key="countInterval"
+            android:summary="Count by a specified integer."
+            android:inputType="number"
+            android:maxLength="4"/>-->
+
         <EditTextPreference
+            android:title="Count Warning"
             android:defaultValue="0"
             android:key="countWarning"
-            android:title="Count Warning"
             android:summary="Display a warning on a number (zero to disable)."
             android:inputType="number"
-            android:maxLength="3"/>
+            android:maxLength="4"/>
 
     </PreferenceCategory>
 

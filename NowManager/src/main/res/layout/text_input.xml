@@ -21,8 +21,6 @@
             android:text="M-D AM/PM"
             android:layout_gravity="center"
             android:id="@+id/dateText"
-            android:layout_below="@+id/imageButton"
-            android:layout_alignRight="@+id/timeOfDayText"
             android:typeface="monospace"
             android:focusable="false"/>
 
@@ -48,7 +46,7 @@
             android:background="@android:color/transparent"
             android:hint="Enter a label for this log."
             android:layout_weight="4"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:gravity="center|top"/>
 
     </LinearLayout>

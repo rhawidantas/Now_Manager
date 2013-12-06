@@ -52,8 +52,7 @@ public class TimeCardAdapter extends CursorAdapter {
             viewHolder.eventNameInput.setText("");
         }
 
-        // set focus listener.
-        // This needs to be done here instead of on create to make sure data and views line up properly.
+        // Saves event name input when focus is lost
         viewHolder.eventNameInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -71,9 +70,17 @@ public class TimeCardAdapter extends CursorAdapter {
             @Override
             public void onClick(View v) {
 
-                String input = viewHolder.eventNameInput.getText().toString();
-                Intent textEditIntent = new Intent(mContext,  TextInput.class);
-                textEditIntent.putExtra("URL", input);
+                // grabs data from fields to transfer to the text input activity
+                String eventName = viewHolder.eventNameInput.getText().toString();
+                String dateText = viewHolder.dateText.getText().toString();
+                String timeText = viewHolder.timeText.getText().toString();
+
+                Intent textEditIntent = new Intent(mContext, TextInput.class);
+
+                textEditIntent.putExtra("eventName", eventName);
+                textEditIntent.putExtra( "dateText", dateText);
+                textEditIntent.putExtra( "timeText", timeText);
+
                 mContext.startActivity(textEditIntent);
 
             }
