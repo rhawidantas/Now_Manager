@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
     android:layout_marginBottom="16dp"
     android:layout_marginLeft="16dp"
@@ -10,9 +10,9 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:weightSum="5"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/mainLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,16 +39,29 @@
 
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:id="@+id/textInput"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:minHeight="60dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:background="@android:color/transparent"
-            android:hint="Enter a label for this log."
-            android:layout_weight="4"
             android:layout_marginTop="20dp"
-            android:gravity="center|top"/>
+            android:gravity="center"
+            android:hint="Set a new title" />
 
     </LinearLayout>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="55dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Rename"
+        android:id="@+id/button1"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/mainLayout"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

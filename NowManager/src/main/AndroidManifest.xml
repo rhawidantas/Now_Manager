@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.collinguarino.nowmanager"
     android:versionCode="6"
-    android:versionName="1.23" >
+    android:versionName="1.3" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -29,11 +29,6 @@
             </intent-filter>
 
         </activity>
-
-        <activity
-            android:name="com.collinguarino.nowmanager.TextInput"
-            android:label="Return       "
-            android:parentActivityName="com.collinguarino.nowmanager.Main"/>
 
         <activity
             android:name="com.collinguarino.nowmanager.Settings"

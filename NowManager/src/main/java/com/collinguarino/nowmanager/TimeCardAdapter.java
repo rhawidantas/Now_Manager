@@ -1,14 +1,17 @@
 package com.collinguarino.nowmanager;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -70,19 +73,39 @@ public class TimeCardAdapter extends CursorAdapter {
             @Override
             public void onClick(View v) {
 
-                // grabs data from fields to transfer to the text input activity
-                String eventName = viewHolder.eventNameInput.getText().toString();
-                String dateText = viewHolder.dateText.getText().toString();
-                String timeText = viewHolder.timeText.getText().toString();
+                // show a dialog to allow editing (can't edit in a listview via main)
+                final Dialog dialog = new Dialog(mContext);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.text_input);
 
-                Intent textEditIntent = new Intent(mContext, TextInput.class);
+                final EditText eventNameInput = (EditText) dialog.findViewById(R.id.textInput);
+                final TextView dateText = (TextView) dialog.findViewById(R.id.dateText);
+                final TextView timeText = (TextView) dialog.findViewById(R.id.timeText);
 
-                textEditIntent.putExtra("eventName", eventName);
-                textEditIntent.putExtra( "dateText", dateText);
-                textEditIntent.putExtra( "timeText", timeText);
+                eventNameInput.append(viewHolder.eventNameInput.getText().toString()); // append sets input to last char of string
+                dateText.setText(viewHolder.dateText.getText().toString());
+                timeText.setText(viewHolder.timeText.getText().toString());
 
-                mContext.startActivity(textEditIntent);
+                // open keyboard to focus on appending the log name
+                eventNameInput.requestFocus();
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+                Button b1 = (Button) dialog.findViewById(R.id.button1);
+                b1.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        viewHolder.eventNameInput.setText(eventNameInput.getText().toString());
+
+                        // save the new log data
+                        mContext.getContentResolver().update(Contracts.TimeCards.CONTENT_URI,
+                                Contracts.TimeCards.getUpdateValues(viewHolder.eventNameInput.getText().toString()),
+                                Contracts.TimeCards._ID + " = " + timeCard.getId(),
+                                null);
+
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
         });
 

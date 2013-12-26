@@ -4,7 +4,6 @@
 
     <PreferenceCategory android:title="Preferences">
 
-
         <CheckBoxPreference
             android:title="Volume Keys"
             android:summary="Use volume up or down to add a log."
@@ -13,15 +12,15 @@
 
         <CheckBoxPreference
             android:title="Vibrate On Press"
-            android:summary="Vibrate when a new log is added."
+            android:summary="Vibrate when a log is added."
             android:key="vibrateOn"
             android:defaultValue="false"/>
 
         <CheckBoxPreference
-            android:title="Screen Rotation"
-            android:summary="Allow orientation change."
-            android:key="screenRotation"
-            android:defaultValue="true"/>
+            android:title="Action Bar Buttons"
+            android:summary="Move the new log button to the top."
+            android:key="actionBarButtons"
+            android:defaultValue="false"/>
 
     </PreferenceCategory>
 

@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +30,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -50,7 +50,10 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private TimeCardAdapter mAdapter;
     String defaultEventName;
 
-    // Contextual action bar
+    // UI
+    Button accessibilityButton;
+
+    // action bar
     ActionMode mActionMode;
     Activity mActivity;
 
@@ -59,7 +62,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
     // Preferences
-    boolean volumeKeys, vibrateOn, screenRotation;
+    boolean volumeKeys, vibrateOn, screenRotation, actionBarButtons;
     //int countInterval;
 
     @Override
@@ -107,6 +110,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 this);
 
 
+        // runs
         app_launched(this);
 
         // restores index state of action bar spinner
@@ -125,8 +129,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         registerForContextMenu(listView);
 
-        // ISSUE: EditText is taking the long press, not the entire listView row
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -142,11 +145,24 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 return true;
 
             }
+        });*/
+
+        accessibilityButton = (Button) findViewById(R.id.accessibilityButton);
+        accessibilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createNewTimeCard();
+            }
         });
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         getLoaderManager().initLoader(0, null, this);
+
+        // not working
+        /*if (getItemCount() == 0) {
+            accessibilityButton.setText("Let's get started!");
+        }*/
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -231,6 +247,14 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         screenRotation = preferences.getBoolean("screenRotation", true);
 
+        actionBarButtons = preferences.getBoolean("actionBarButtons", false);
+
+        if (actionBarButtons) {
+            accessibilityButton.setVisibility(View.GONE);
+        } else {
+            accessibilityButton.setVisibility(View.VISIBLE);
+        }
+
         if (screenRotation) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         } else {
@@ -240,6 +264,11 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         getActionBar().setSelectedNavigationItem(spinnerIndex);
+
+        // not working
+        /*if (getItemCount() == 0) {
+            accessibilityButton.setText("Let's get started!");
+        }*/
     }
 
     /**
@@ -260,7 +289,15 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 final TimeCard timeCard = ((TimeCardAdapter)mAdapter).getTimeCard(position);
                 if(timeCard != null) {
                     getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, Contracts.TimeCards._ID + " = " + timeCard.getId(), null);
-                    Toast.makeText(context, "Log Deleted", Toast.LENGTH_SHORT).show();
+
+                    Toast toast = Toast.makeText(getApplicationContext(), "Log Deleted", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.BOTTOM,0,280);
+                    toast.show();
+
+                    // not working
+                    /*if (getItemCount() == 0) {
+                        accessibilityButton.setText("Let's get started!");
+                    }*/
                 }
             }
         }
@@ -304,13 +341,15 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             menu.findItem(R.id.goBot).setVisible(showJumpToOptions);
         }
 
+        menu.findItem(R.id.addnew).setVisible(actionBarButtons);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.newTimeCard:
+            case R.id.addnew:
                 createNewTimeCard();
                 return true;
 
@@ -353,7 +392,12 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                         NowManagerProvider provider = new NowManagerProvider();
                         getContentResolver().delete(Contracts.TimeCards.CONTENT_URI, null, null);
                         hideKeyboard();
-                        Toast.makeText(getApplicationContext(), "All Events Deleted", Toast.LENGTH_SHORT).show();
+
+                        Toast toast = Toast.makeText(getApplicationContext(), "All Logs Deleted", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.BOTTOM,0,280);
+                        toast.show();
+
+                        accessibilityButton.setText("Let's get started!");
 
                     }
                 });
@@ -410,6 +454,12 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         if (vibrateOn) {
             ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
         }
+
+        if (mActionBar.getSelectedNavigationIndex() == 0) {
+            accessibilityButton.setText("New Event");
+        } else if (mActionBar.getSelectedNavigationIndex() == 1) {
+            accessibilityButton.setText("New Tally");
+        }
     }
 
     /**
@@ -433,6 +483,12 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("spinnerIndex", mActionBar.getSelectedNavigationIndex());
         editor.commit();
+
+        if (mActionBar.getSelectedNavigationIndex() == 0) {
+            accessibilityButton.setText("New Event");
+        } else if (mActionBar.getSelectedNavigationIndex() == 1) {
+            accessibilityButton.setText("New Tally");
+        }
 
         return true;
     }
@@ -547,7 +603,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                         editor.putString("countWarning", "0");
                         editor.commit();
 
-                        Toast.makeText(context, "Count Limit Reset", Toast.LENGTH_SHORT).show();
+                        Toast toast = Toast.makeText(getApplicationContext(), "Count Limit Reset", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.BOTTOM,0,280);
+                        toast.show();
 
                     }
                 });
