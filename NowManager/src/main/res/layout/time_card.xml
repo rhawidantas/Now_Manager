@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:paddingBottom="12dp"
-        android:background="@drawable/bottom_border"
+        android:background="@drawable/card_background"
         android:id="@+id/timeCardFragmentLayout">
 
         <EditText
@@ -31,7 +31,9 @@
             android:layout_marginRight="5dp"
             android:hint="Untitled Event"
             android:background="@android:color/transparent"
-            android:longClickable="false"/>
+            android:longClickable="false"
+            android:paddingTop="10dp"
+            android:paddingBottom="15dp"/>
 
         <LinearLayout
             android:orientation="vertical"
@@ -39,7 +41,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/dateLayout"
             android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
 
             <TextView
                 android:layout_width="wrap_content"

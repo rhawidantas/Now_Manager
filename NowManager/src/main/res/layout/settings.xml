@@ -5,6 +5,12 @@
     <PreferenceCategory android:title="Preferences">
 
         <CheckBoxPreference
+            android:title="Audio Responsive"
+            android:summary="Snap or clap to add a new log (plays your text tone as feedback)."
+            android:key="audioResponse"
+            android:defaultValue="false"/>
+
+        <CheckBoxPreference
             android:title="Volume Keys"
             android:summary="Use volume up or down to add a log."
             android:key="volumeKeys"

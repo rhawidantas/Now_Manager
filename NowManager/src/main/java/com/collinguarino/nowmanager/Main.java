@@ -15,9 +15,12 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.view.ActionMode;
@@ -62,8 +65,15 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
     // Preferences
-    boolean volumeKeys, vibrateOn, screenRotation, actionBarButtons;
+    boolean volumeKeys, vibrateOn, screenRotation, actionBarButtons, audioResponse;
     //int countInterval;
+
+    // Sound recording vars
+    private SoundMeter mSensor;
+    private int mThreshold = 6;
+    Runnable mPollTask;
+    private static final int POLL_INTERVAL = 300;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +89,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         vibrateOn = preferences.getBoolean("vibrateOn", false);
 
         screenRotation = preferences.getBoolean("screenRotation", true);
+
+        audioResponse = preferences.getBoolean("audioResponse", false);
 
         if (screenRotation) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
@@ -155,15 +167,63 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             }
         });
 
-        // Prepare the loader.  Either re-connect with an existing one,
-        // or start a new one.
+        // Prepare the loader:  either re-connect with an existing one or start a new one.
         getLoaderManager().initLoader(0, null, this);
 
         // not working
         /*if (getItemCount() == 0) {
             accessibilityButton.setText("Let's get started!");
         }*/
+
+        /**
+         * Define runnable thread to detect noise
+         */
+        if (audioResponse) {
+
+            mSensor = new SoundMeter();
+
+            try {
+                mSensor.start();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+
+            handler = new Handler();
+
+            final Runnable r = new Runnable() {
+
+                public void run() {
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            double amp = mSensor.getAmplitude();
+
+                            if (amp > mThreshold) {
+                                createNewTimeCard();
+
+                                // Will only play if ringer volume is set to ring
+                                try {
+                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                    r.play();
+                                } catch (Exception e) {}
+                            }
+
+                            handler.postDelayed(this, 100); // amount of delay between every cycle of volume level detection + sending the data  out
+
+                        }
+                    });
+                }
+            };
+            // initialize the handler (required for handler to work)
+            handler.postDelayed(r, 100);
+
+        }
+
     }
+
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -248,6 +308,12 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         screenRotation = preferences.getBoolean("screenRotation", true);
 
         actionBarButtons = preferences.getBoolean("actionBarButtons", false);
+
+        audioResponse = preferences.getBoolean("audioResponse", false);
+
+        if (audioResponse) {
+            mSensor.start();
+        }
 
         if (actionBarButtons) {
             accessibilityButton.setVisibility(View.GONE);
@@ -649,5 +715,15 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (audioResponse) {
+            mSensor.stop();
+        }
+
     }
 }
