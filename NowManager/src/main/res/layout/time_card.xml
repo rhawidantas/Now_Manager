@@ -32,8 +32,9 @@
             android:hint="Untitled Event"
             android:background="@android:color/transparent"
             android:longClickable="false"
-            android:paddingTop="10dp"
-            android:paddingBottom="15dp"/>
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="left|center"/>
 
         <LinearLayout
             android:orientation="vertical"
@@ -41,8 +42,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/dateLayout"
             android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true">
+            android:layout_alignParentRight="true">
 
             <TextView
                 android:layout_width="wrap_content"
