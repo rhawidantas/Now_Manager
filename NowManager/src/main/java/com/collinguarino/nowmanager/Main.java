@@ -712,8 +712,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         // This is called when the last Cursor provided to onLoadFinished()
-        // above is about to be closed.  We need to make sure we are no
-        // longer using it.
+        // above is about to be closed.  We need to make sure we are no longer using it.
         mAdapter.swapCursor(null);
     }
 
