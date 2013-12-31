@@ -13,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -66,7 +65,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
     // Preferences
-    boolean volumeKeys, vibrateOn, screenRotation, actionBarButtons, audioResponse;
+    boolean volumeKeys, vibrateOn, actionBarButtons, audioResponse;
     //int countInterval;
 
     // Sound recording vars
@@ -87,17 +86,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
 
-        screenRotation = preferences.getBoolean("screenRotation", true);
-
         audioResponse = preferences.getBoolean("audioResponse", false);
 
         mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
-
-        if (screenRotation) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -225,7 +216,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
     }
 
-
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         if (volumeKeys) {
@@ -305,8 +295,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
 
-        screenRotation = preferences.getBoolean("screenRotation", true);
-
         actionBarButtons = preferences.getBoolean("actionBarButtons", false);
 
         audioResponse = preferences.getBoolean("audioResponse", false);
@@ -322,12 +310,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             accessibilityButton.setVisibility(View.GONE);
         } else {
             accessibilityButton.setVisibility(View.VISIBLE);
-        }
-
-        if (screenRotation) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
