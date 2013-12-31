@@ -2,6 +2,5 @@ NowManager
 ==========
 
 Timestamp and tally counter for Android
-Now Manager
 
-Documentation: https://docs.google.com/document/d/1wXZzA5-xCQZY-17dwBLHqUU50Vm_Qd0K-1gcEsU6OPY/edit
+![alt tag](https://lh5.googleusercontent.com/-RBHBTYPreD0/UppUV2qAeiI/AAAAAAAAGNU/joqTuTJXvyE/w944-h616-no/nowmanager1.png)
