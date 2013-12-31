@@ -27,12 +27,12 @@
 
     <Button
         android:layout_width="230dp"
-        android:layout_height="88dp"
+        android:layout_height="85dp"
         android:id="@+id/accessibilityButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="11dp"
+        android:layout_marginTop="11dp"
         android:background="@drawable/new_log_button"
         android:text="Add"
         android:textSize="20sp" />

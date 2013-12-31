@@ -19,6 +19,18 @@
         android:background="@drawable/card_background"
         android:id="@+id/timeCardFragmentLayout">
 
+    <!--This is a bit of a hack, but it works. The onClickListener for the EditText wasn't
+        reliable due to the touch radius, so this has an onClickListener that mirrors it.-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"
+        android:background="@android:color/transparent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/dateLayout"
+        android:id="@+id/expandTouchEvent">
+
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,14 +39,12 @@
             android:layout_marginLeft="20dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/dateLayout"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="20dp"
             android:hint="Untitled Event"
             android:background="@android:color/transparent"
-            android:longClickable="false"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:gravity="left|center"/>
+            android:gravity="center|center_horizontal|left" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -42,7 +52,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/dateLayout"
             android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -51,7 +63,6 @@
                 tools:text="M-D AM/PM"
                 android:layout_gravity="center"
                 android:id="@+id/dateText"
-                android:layout_below="@+id/imageButton"
                 android:layout_alignRight="@+id/timeOfDayText"
                 android:typeface="monospace"
                 android:focusable="false" />
@@ -70,6 +81,5 @@
                 android:focusable="false" />
 
         </LinearLayout>
-
     </RelativeLayout>
 </LinearLayout>

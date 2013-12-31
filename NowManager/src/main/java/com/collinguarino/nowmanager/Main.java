@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -70,9 +71,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
     // Sound recording vars
     private SoundMeter mSensor;
-    private int mThreshold = 6;
-    Runnable mPollTask;
-    private static final int POLL_INTERVAL = 300;
+    private int mThreshold = 5; // within ~6 inches of device, medium noise clap/snap
     private Handler handler;
 
     @Override
@@ -141,7 +140,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         registerForContextMenu(listView);
 
-        /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -157,7 +156,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 return true;
 
             }
-        });*/
+        });
 
         accessibilityButton = (Button) findViewById(R.id.accessibilityButton);
         accessibilityButton.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +262,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             switch (item.getItemId()) {
                 case R.id.share:
 
-
                     // DOES NOT WORK : how do I return the value of the selected TimeCard event name and date information?
                     String totalOutput = ("This feature doesn't work yet, check in later :)");
 
@@ -312,6 +310,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         audioResponse = preferences.getBoolean("audioResponse", false);
 
         if (audioResponse) {
+            stopService(new Intent(this, Main.class)); // required re-draw
             mSensor.start();
         }
 

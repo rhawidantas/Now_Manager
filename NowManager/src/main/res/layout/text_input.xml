@@ -55,7 +55,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:hint="Set a new title" />
+            android:hint="Set a new title"/>
 
     </LinearLayout>
 
