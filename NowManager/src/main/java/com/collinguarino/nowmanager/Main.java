@@ -71,7 +71,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
     // Sound recording vars
     private SoundMeter mSensor;
-    private int mThreshold = 5; // within ~6 inches of device, medium noise clap/snap
+    private int mThreshold = 6; // sensitivity 0 - 8 (8 being hard to trigger)
     private Handler handler;
 
     @Override
@@ -90,6 +90,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         screenRotation = preferences.getBoolean("screenRotation", true);
 
         audioResponse = preferences.getBoolean("audioResponse", false);
+
+        mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
 
         if (screenRotation) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
@@ -308,6 +310,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         actionBarButtons = preferences.getBoolean("actionBarButtons", false);
 
         audioResponse = preferences.getBoolean("audioResponse", false);
+
+        mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
 
         if (audioResponse) {
             stopService(new Intent(this, Main.class)); // required re-draw

@@ -10,6 +10,15 @@
             android:key="audioResponse"
             android:defaultValue="false"/>
 
+        <ListPreference
+            android:title="Audio Sensitivity"
+            android:key="audio_sensitivity"
+            android:entries="@array/sensitivity_levels"
+            android:entryValues="@array/sensitivity_values"
+            android:dependency="audioResponse"
+            android:summary="Sensitivity varies between devices."
+            android:defaultValue="6"/>
+
         <CheckBoxPreference
             android:title="Volume Keys"
             android:summary="Use volume up or down to add a log."
