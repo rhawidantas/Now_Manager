@@ -16,7 +16,7 @@
             android:entries="@array/sensitivity_levels"
             android:entryValues="@array/sensitivity_values"
             android:dependency="audioResponse"
-            android:summary="Sensitivity varies between devices."
+            android:summary="Must have the above setting enabled."
             android:defaultValue="6"/>
 
         <CheckBoxPreference
