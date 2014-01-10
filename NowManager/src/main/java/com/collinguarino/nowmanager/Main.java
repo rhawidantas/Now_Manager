@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -72,6 +71,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private SoundMeter mSensor;
     private int mThreshold = 6; // sensitivity 0 - 8 (8 being hard to trigger)
     private Handler handler;
+
+    // voice actions
+    protected static final int REQUEST_OK = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +135,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         registerForContextMenu(listView);
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -149,7 +151,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 return true;
 
             }
-        });
+        });*/
 
         accessibilityButton = (Button) findViewById(R.id.accessibilityButton);
         accessibilityButton.setOnClickListener(new View.OnClickListener() {
@@ -400,6 +402,15 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            /*case R.id.voiceActions:
+                Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
+                try {
+                    startActivityForResult(i, REQUEST_OK); // see onActivityResult
+                } catch (Exception e) {
+                    Toast.makeText(this, "Error initializing speech to text engine.", Toast.LENGTH_LONG).show();
+                }
+                return true;*/
             case R.id.addnew:
                 createNewTimeCard();
                 return true;
@@ -425,6 +436,33 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         }
         return true;
     }
+
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        ArrayList<String> thingsYouSaid = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+        Toast.makeText(getApplicationContext(), thingsYouSaid.get(0), Toast.LENGTH_SHORT).show();
+
+        if (thingsYouSaid.get(0) == "hello") {
+            Toast.makeText(getApplicationContext(), "Hello there :)", Toast.LENGTH_SHORT).show();
+        }
+
+            if (requestCode == REQUEST_OK  && resultCode == RESULT_OK) {
+
+               // ArrayList<String> thingsYouSaid = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+
+                if (thingsYouSaid.get(0) == "hello") {
+                    Toast.makeText(getApplicationContext(), "Hello there :)", Toast.LENGTH_SHORT).show();
+                }
+
+            //((TextView)findViewById(R.id.text1)).setText(thingsYouSaid.get(0));
+
+            // show what user said (TESTING PURPOSES)
+            //Toast.makeText(getApplicationContext(), thingsYouSaid.get(0), Toast.LENGTH_SHORT).show();
+        }
+    }*/
 
     /**
      * Helper method to show an ok/cancel alert to the user for deleting all items.

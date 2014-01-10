@@ -16,7 +16,7 @@
         android:divider="@null"
         android:dividerHeight="0dp"
         android:descendantFocusability="beforeDescendants"
-        android:layout_above="@+id/accessibilityButton" />
+        android:layout_above="@+id/log_button_background" />
 
     <TextView
         android:id="@android:id/empty"
@@ -25,18 +25,27 @@
         android:layout_centerInParent="true"
         android:text="@string/no_events"/>
 
+    <LinearLayout
+        android:layout_height="85dp"
+        android:layout_width="wrap_content"
+        android:background="@android:drawable/toast_frame"
+        android:padding="0dp"
+        android:id="@+id/log_button_background"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="9dp"
+        android:layout_marginTop="9dp">
+
     <Button
         android:layout_width="230dp"
         android:layout_height="85dp"
         android:id="@+id/accessibilityButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="11dp"
-        android:layout_marginTop="11dp"
         android:background="@drawable/new_log_button"
         android:text="Add"
         android:textSize="20sp" />
 
+    </LinearLayout>
+
 </RelativeLayout>
-
-

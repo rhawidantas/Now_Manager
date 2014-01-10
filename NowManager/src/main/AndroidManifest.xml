@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.collinguarino.nowmanager"
-    android:versionCode="8"
-    android:versionName="1.32" >
+    android:versionCode="9"
+    android:versionName="1.33" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -37,7 +37,22 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:parentActivityName="com.collinguarino.nowmanager.Main"/>
-        
+
+        <!--Accessible to third party apps (ie. Trigger/NFC Task Launcher, other automation)-->
+        <activity
+            android:name="com.collinguarino.nowmanager.AddNewLog"
+            android:label="Add New Log"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.collinguarino.nowmanager.Main">
+
+            <intent-filter>
+                <action android:name="android.intent.action.RUN" />
+                <category android:name="android.intent.category.ALTERNATIVE" />
+            </intent-filter>
+
+        </activity>
+
         <provider
             android:authorities="com.collinguarino.nowmanager.provider"
             android:name=".provider.NowManagerProvider"/>
