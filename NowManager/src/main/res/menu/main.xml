@@ -7,11 +7,11 @@
         android:title="Voice Actions"
         android:icon="@drawable/abc_ic_voice_search_api_holo_light"/>-->
 
-    <item android:id="@+id/addnew"
+    <!--<item android:id="@+id/addnew"
         android:title="Add"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:icon="@drawable/addnew"/>
+        android:icon="@drawable/addnew"/>-->
 
     <item
         android:id="@+id/settings"

@@ -1,7 +1,6 @@
 package com.collinguarino.nowmanager;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -34,7 +33,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.collinguarino.nowmanager.model.TimeCard;
@@ -53,27 +54,23 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     String defaultEventName;
 
     // UI
-    Button accessibilityButton;
+    Button newLogButton;
 
     // action bar
     ActionMode mActionMode;
-    Activity mActivity;
 
     // For time elapsed label
     public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
     public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
 
     // Preferences
-    boolean volumeKeys, vibrateOn, actionBarButtons, audioResponse;
+    boolean volumeKeys, vibrateOn, audioResponse;
     //int countInterval;
 
     // Sound recording vars
     private SoundMeter mSensor;
     private int mThreshold = 6; // sensitivity 0 - 8 (8 being hard to trigger)
     private Handler handler;
-
-    // voice actions
-    protected static final int REQUEST_OK = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,8 +150,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             }
         });*/
 
-        accessibilityButton = (Button) findViewById(R.id.accessibilityButton);
-        accessibilityButton.setOnClickListener(new View.OnClickListener() {
+        newLogButton = (Button) findViewById(R.id.newLogButton);
+        newLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createNewTimeCard();
@@ -163,11 +160,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         // Prepare the loader:  either re-connect with an existing one or start a new one.
         getLoaderManager().initLoader(0, null, this);
-
-        // not working
-        /*if (getItemCount() == 0) {
-            accessibilityButton.setText("Let's get started!");
-        }*/
 
         /**
          * Define runnable thread to detect noise
@@ -297,8 +289,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
 
-        actionBarButtons = preferences.getBoolean("actionBarButtons", false);
-
         audioResponse = preferences.getBoolean("audioResponse", false);
 
         mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
@@ -308,20 +298,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             mSensor.start();
         }
 
-        if (actionBarButtons) {
-            accessibilityButton.setVisibility(View.GONE);
-        } else {
-            accessibilityButton.setVisibility(View.VISIBLE);
-        }
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         getActionBar().setSelectedNavigationItem(spinnerIndex);
-
-        // not working
-        /*if (getItemCount() == 0) {
-            accessibilityButton.setText("Let's get started!");
-        }*/
     }
 
     /**
@@ -346,11 +325,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                     Toast toast = Toast.makeText(getApplicationContext(), "Log Deleted", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.BOTTOM,0,280);
                     toast.show();
-
-                    // not working
-                    /*if (getItemCount() == 0) {
-                        accessibilityButton.setText("Let's get started!");
-                    }*/
                 }
             }
         }
@@ -394,37 +368,20 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             menu.findItem(R.id.goBot).setVisible(showJumpToOptions);
         }
 
-        menu.findItem(R.id.addnew).setVisible(actionBarButtons);
-
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            /*case R.id.voiceActions:
-                Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
-                try {
-                    startActivityForResult(i, REQUEST_OK); // see onActivityResult
-                } catch (Exception e) {
-                    Toast.makeText(this, "Error initializing speech to text engine.", Toast.LENGTH_LONG).show();
-                }
-                return true;*/
-            case R.id.addnew:
-                createNewTimeCard();
-                return true;
-
-            case R.id.goTop:
-                // go to top of the list
-                getListView().smoothScrollToPosition(0);
-                return true;
-
             case R.id.settings:
                 Intent intent = new Intent(getApplicationContext(), Settings.class);
                 startActivity(intent);
                 return true;
-
+            case R.id.goTop:
+                // go to top of the list
+                getListView().smoothScrollToPosition(0);
+                return true;
             case R.id.goBot:
                 // go to bottom of the list
                 getListView().smoothScrollToPosition(getItemCount());
@@ -436,33 +393,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         }
         return true;
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        ArrayList<String> thingsYouSaid = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-        Toast.makeText(getApplicationContext(), thingsYouSaid.get(0), Toast.LENGTH_SHORT).show();
-
-        if (thingsYouSaid.get(0) == "hello") {
-            Toast.makeText(getApplicationContext(), "Hello there :)", Toast.LENGTH_SHORT).show();
-        }
-
-            if (requestCode == REQUEST_OK  && resultCode == RESULT_OK) {
-
-               // ArrayList<String> thingsYouSaid = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
-
-                if (thingsYouSaid.get(0) == "hello") {
-                    Toast.makeText(getApplicationContext(), "Hello there :)", Toast.LENGTH_SHORT).show();
-                }
-
-            //((TextView)findViewById(R.id.text1)).setText(thingsYouSaid.get(0));
-
-            // show what user said (TESTING PURPOSES)
-            //Toast.makeText(getApplicationContext(), thingsYouSaid.get(0), Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
     /**
      * Helper method to show an ok/cancel alert to the user for deleting all items.
@@ -485,8 +415,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                         Toast toast = Toast.makeText(getApplicationContext(), "All Logs Deleted", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.BOTTOM,0,280);
                         toast.show();
-
-                        accessibilityButton.setText("Let's get started!");
 
                     }
                 });
@@ -528,7 +456,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
             // Tally limit has been reached
             if (countWarning == Integer.valueOf(tallyCount) && countWarning != 0) {
-                showCountWarning();
+                showCountWarningDialog();
             }
 
         // If there is a defined default event name, use it
@@ -542,12 +470,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);
         if (vibrateOn) {
             ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
-        }
-
-        if (mActionBar.getSelectedNavigationIndex() == 0) {
-            accessibilityButton.setText("New Event");
-        } else if (mActionBar.getSelectedNavigationIndex() == 1) {
-            accessibilityButton.setText("New Tally");
         }
     }
 
@@ -572,12 +494,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("spinnerIndex", mActionBar.getSelectedNavigationIndex());
         editor.commit();
-
-        if (mActionBar.getSelectedNavigationIndex() == 0) {
-            accessibilityButton.setText("New Event");
-        } else if (mActionBar.getSelectedNavigationIndex() == 1) {
-            accessibilityButton.setText("New Tally");
-        }
 
         return true;
     }
@@ -660,10 +576,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         dialog.show();
     }
 
-    /**
-     * Helper method to show the tally count warning after a user specified integer
-     */
-    private void showCountWarning() {
+/*    private void showCountWarning() {
         AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
                 this);
 
@@ -699,6 +612,100 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                     }
                 });
         alertDialog2.show();
+    }*/
+
+    /**
+     * Helper method to show the tally count warning after a user specified integer
+     */
+    public void showCountWarningDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.count_warning_dialog);
+
+        TextView textView = (TextView) dialog.findViewById(R.id.textView);
+        textView.setText("Your defined limit of " + String.valueOf(countWarning) + " has been reached.");
+
+        Button b1 = (Button) dialog.findViewById(R.id.button1);
+        b1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // remove limit
+                SharedPreferences preferences = PreferenceManager
+                        .getDefaultSharedPreferences(context);
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("countWarning", "0");
+                editor.commit();
+
+                Toast toast = Toast.makeText(getApplicationContext(), "Count Limit Reset", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM,0,280);
+                toast.show();
+
+                // dismiss dialog to carry on using app
+                dialog.dismiss();
+            }
+        });
+
+        Button b2 = (Button) dialog.findViewById(R.id.button2);
+        b2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // set new limit option
+
+                // dismiss current dialog
+                dialog.dismiss();
+
+                // show new dialog to set new limit
+                showNewInputCountLimitDialog();
+
+            }
+        });
+
+        Button b3 = (Button) dialog.findViewById(R.id.button3);
+        b3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Continue, quit dialog
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    /**
+     * Helper method for showCountWarningDialog that allows user input of new count limit specification
+     */
+    public void showNewInputCountLimitDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.set_count_limit_dialog);
+
+        final EditText countLimitInput = (EditText) dialog.findViewById(R.id.editText);
+        //countLimitInput.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        Button b1 = (Button) dialog.findViewById(R.id.button1);
+        b1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                // grab new count limit integer from the edittext and set it in the sharedprefs editor
+
+                SharedPreferences preferences = PreferenceManager
+                        .getDefaultSharedPreferences(context);
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("countWarning", String.valueOf(countLimitInput.getText().toString()));
+                editor.commit();
+
+                // hide the keyboard
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(countLimitInput.getWindowToken(), 0);
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     public void hideKeyboard() {

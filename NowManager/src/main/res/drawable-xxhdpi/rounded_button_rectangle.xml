@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--<item>
+    <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
             <stroke android:width="2dp" android:color="#CFCFCF" />
             <corners android:radius="10dp" />
             <gradient android:startColor="#DDDDDD" android:centerColor="#DEDEDE" android:endColor="#DBDBDB" android:angle="90" />
         </shape>
-    </item>-->
-
-    <item android:state_pressed="true"
-        android:drawable="@drawable/log_button_pressed" /> <!-- pressed -->
-    <item android:drawable="@drawable/log_button_default" /> <!-- default -->
-
+    </item>
 </selector>

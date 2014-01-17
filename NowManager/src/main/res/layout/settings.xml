@@ -31,11 +31,11 @@
             android:key="vibrateOn"
             android:defaultValue="false"/>
 
-        <CheckBoxPreference
+        <!--<CheckBoxPreference
             android:title="Action Bar Buttons"
             android:summary="Move the new log button to the top."
             android:key="actionBarButtons"
-            android:defaultValue="false"/>
+            android:defaultValue="false"/>-->
 
     </PreferenceCategory>
 
