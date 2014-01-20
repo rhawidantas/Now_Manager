@@ -46,7 +46,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private ActionBar mActionBar;
     public int countWarning, spinnerIndex;
     private TimeCardAdapter mAdapter;
-    //String defaultEventName;
 
     // UI
     Button newLogButton;
@@ -54,18 +53,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     // action bar
     ActionMode mActionMode;
 
-    // For time elapsed label
-    /*public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
-    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");*/
-
     // Preferences
-    boolean volumeKeys, vibrateOn; // , audioResponse
-    //int countInterval;
-
-    // Sound recording vars
-    /*private SoundMeter mSensor;
-    private int mThreshold = 6; // sensitivity 0 - 8 (8 being hard to trigger)
-    private Handler handler;*/
+    boolean volumeKeys, vibrateOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +70,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         vibrateOn = preferences.getBoolean("vibrateOn", false);
 
         //audioResponse = preferences.getBoolean("audioResponse", false);
-
-        //mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -120,6 +107,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         final ListView listView = getListView();
         listView.setLongClickable(true);
         listView.setItemsCanFocus(true);
+
         // Make the list dismissable by swipe.
         SwipeDismissListViewTouchListener swipeDismissListViewTouchListener = new SwipeDismissListViewTouchListener(listView, listDismissCallbacks);
         listView.setOnTouchListener(swipeDismissListViewTouchListener);
@@ -155,54 +143,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         // Prepare the loader:  either re-connect with an existing one or start a new one.
         getLoaderManager().initLoader(0, null, this);
-
-        /**
-         * Define runnable thread to detect noise
-         */
-        /*if (audioResponse) {
-
-            mSensor = new SoundMeter();
-
-            try {
-                mSensor.start();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-
-            handler = new Handler();
-
-            final Runnable r = new Runnable() {
-
-                public void run() {
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            double amp = mSensor.getAmplitude();
-
-                            if (amp > mThreshold) {
-                                createNewTimeCard();
-
-                                // Will only play if ringer volume is set to ring
-                                try {
-                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                    r.play();
-                                } catch (Exception e) {}
-                            }
-
-                            handler.postDelayed(this, 100); // amount of delay between every cycle of volume level detection + sending the data  out
-
-                        }
-                    });
-                }
-            };
-            // initialize the handler (required for handler to work)
-            handler.postDelayed(r, 100);
-
-        }
-*/
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -283,15 +223,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         volumeKeys = preferences.getBoolean("volumeKeys", false);
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
-
-        //audioResponse = preferences.getBoolean("audioResponse", false);
-
-        //mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
-
-        /*if (audioResponse) {
-            stopService(new Intent(this, Main.class)); // required re-draw
-            mSensor.start();
-        }*/
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -577,44 +508,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         dialog.show();
     }
 
-/*    private void showCountWarning() {
-        AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
-                this);
-
-        alertDialog2.setTitle("Count Limit Reached");
-        alertDialog2.setMessage("Your defined limit of " + countWarning + " has been reached.");
-
-        // lets the user continue, keeps the count limit for next time
-        alertDialog2.setPositiveButton("Continue",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.cancel();
-
-                    }
-                });
-
-        // removes the limit set in preferences and allows the user to continue
-        alertDialog2.setNegativeButton("Remove Limit",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        SharedPreferences preferences = PreferenceManager
-                                .getDefaultSharedPreferences(context);
-
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("countWarning", "0");
-                        editor.commit();
-
-                        Toast toast = Toast.makeText(getApplicationContext(), "Count Limit Reset", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.BOTTOM,0,280);
-                        toast.show();
-
-                    }
-                });
-        alertDialog2.show();
-    }*/
-
     /**
      * Helper method to show the tally count warning after a user specified integer
      */
@@ -745,15 +638,5 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed.  We need to make sure we are no longer using it.
         mAdapter.swapCursor(null);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        /*if (audioResponse) {
-            mSensor.stop();
-        }*/
-
     }
 }
