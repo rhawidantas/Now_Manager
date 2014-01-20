@@ -13,12 +13,9 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.view.ActionMode;
@@ -42,8 +39,6 @@ import com.collinguarino.nowmanager.model.TimeCard;
 import com.collinguarino.nowmanager.provider.Contracts;
 import com.collinguarino.nowmanager.provider.NowManagerProvider;
 
-import java.text.SimpleDateFormat;
-
 public class Main extends ListActivity implements ActionBar.OnNavigationListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static String TAG = Main.class.getSimpleName();
@@ -51,7 +46,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     private ActionBar mActionBar;
     public int countWarning, spinnerIndex;
     private TimeCardAdapter mAdapter;
-    String defaultEventName;
+    //String defaultEventName;
 
     // UI
     Button newLogButton;
@@ -60,17 +55,17 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     ActionMode mActionMode;
 
     // For time elapsed label
-    public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
-    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
+    /*public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
+    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");*/
 
     // Preferences
-    boolean volumeKeys, vibrateOn, audioResponse;
+    boolean volumeKeys, vibrateOn; // , audioResponse
     //int countInterval;
 
     // Sound recording vars
-    private SoundMeter mSensor;
+    /*private SoundMeter mSensor;
     private int mThreshold = 6; // sensitivity 0 - 8 (8 being hard to trigger)
-    private Handler handler;
+    private Handler handler;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +80,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
 
-        audioResponse = preferences.getBoolean("audioResponse", false);
+        //audioResponse = preferences.getBoolean("audioResponse", false);
 
-        mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
+        //mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -164,7 +159,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         /**
          * Define runnable thread to detect noise
          */
-        if (audioResponse) {
+        /*if (audioResponse) {
 
             mSensor = new SoundMeter();
 
@@ -207,7 +202,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             handler.postDelayed(r, 100);
 
         }
-
+*/
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -289,14 +284,14 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
 
-        audioResponse = preferences.getBoolean("audioResponse", false);
+        //audioResponse = preferences.getBoolean("audioResponse", false);
 
-        mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
+        //mThreshold = Integer.parseInt(preferences.getString("audio_sensitivity", "6"));
 
-        if (audioResponse) {
+        /*if (audioResponse) {
             stopService(new Intent(this, Main.class)); // required re-draw
             mSensor.start();
-        }
+        }*/
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -368,12 +363,21 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             menu.findItem(R.id.goBot).setVisible(showJumpToOptions);
         }
 
+        if (mActionBar.getSelectedNavigationIndex() == 1) {
+            menu.findItem(R.id.setCountLimit).setVisible(true);
+        } else {
+            menu.findItem(R.id.setCountLimit).setVisible(false);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.setCountLimit:
+                showNewInputCountLimitDialog();
+                return true;
             case R.id.settings:
                 Intent intent = new Intent(getApplicationContext(), Settings.class);
                 startActivity(intent);
@@ -386,7 +390,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 // go to bottom of the list
                 getListView().smoothScrollToPosition(getItemCount());
                 return true;
-
             case R.id.deleteAll:
                 showDeleteAllConfirmation();
                 return true;
@@ -442,7 +445,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         countWarning = Integer.parseInt(preferences.getString("countWarning", "0"));
 
-        defaultEventName = String.valueOf(preferences.getString("defaultEventName", ""));
+        //defaultEventName = String.valueOf(preferences.getString("defaultEventName", ""));
 
         // cannot use countInterval because getTallyTimeCardCount() doesn't return the previous count
         //countInterval = Integer.parseInt(preferences.getString("countInterval", "1"));
@@ -460,13 +463,11 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             }
 
         // If there is a defined default event name, use it
-        } else if (defaultEventName != "") {
-            //not a tally
-            values = Contracts.TimeCards.getInsertValues(defaultEventName, false);
-        // No default event name, proceed as normal without preferences
         } else {
+            //not a tally
             values = Contracts.TimeCards.getInsertValues(null, false);
         }
+
         getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);
         if (vibrateOn) {
             ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
@@ -680,7 +681,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         dialog.setContentView(R.layout.set_count_limit_dialog);
 
         final EditText countLimitInput = (EditText) dialog.findViewById(R.id.editText);
-        //countLimitInput.requestFocus();
+        countLimitInput.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         Button b1 = (Button) dialog.findViewById(R.id.button1);
@@ -750,9 +751,9 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     protected void onStop() {
         super.onStop();
 
-        if (audioResponse) {
+        /*if (audioResponse) {
             mSensor.stop();
-        }
+        }*/
 
     }
 }

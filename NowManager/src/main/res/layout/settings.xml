@@ -2,9 +2,9 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
-    <PreferenceCategory android:title="Preferences">
+    <PreferenceCategory android:title="General">
 
-        <CheckBoxPreference
+        <!--<CheckBoxPreference
             android:title="Audio Responsive"
             android:summary="Snap or clap to add a new log (plays your text tone as feedback)."
             android:key="audioResponse"
@@ -17,17 +17,17 @@
             android:entryValues="@array/sensitivity_values"
             android:dependency="audioResponse"
             android:summary="Must have the above setting enabled."
-            android:defaultValue="6"/>
+            android:defaultValue="6"/>-->
 
         <CheckBoxPreference
             android:title="Volume Keys"
-            android:summary="Use volume up or down to add a log."
+            android:summary="Use the volume up or down buttons to add a new log."
             android:key="volumeKeys"
             android:defaultValue="false"/>
 
         <CheckBoxPreference
-            android:title="Vibrate On Press"
-            android:summary="Vibrate when a log is added."
+            android:title="Haptic Feedback"
+            android:summary="Vibrate when a new log is added."
             android:key="vibrateOn"
             android:defaultValue="false"/>
 
@@ -39,7 +39,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Event Logs">
+    <!--<PreferenceCategory android:title="Event Logs">
 
         <EditTextPreference
             android:title="Default Event Name"
@@ -51,13 +51,13 @@
 
     <PreferenceCategory android:title="Tally Counter">
 
-        <!--<EditTextPreference
+        &lt;!&ndash;<EditTextPreference
             android:title="Count Interval"
             android:defaultValue="1"
             android:key="countInterval"
             android:summary="Count by a specified integer."
             android:inputType="number"
-            android:maxLength="4"/>-->
+            android:maxLength="4"/>&ndash;&gt;
 
         <EditTextPreference
             android:title="Count Warning"
@@ -67,6 +67,6 @@
             android:inputType="number"
             android:maxLength="4"/>
 
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 
 </PreferenceScreen>

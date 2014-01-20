@@ -1,18 +1,15 @@
 package com.collinguarino.nowmanager;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceGroup;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 
-public class Settings extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class Settings extends PreferenceActivity  {
+
+    // implements SharedPreferences.OnSharedPreferenceChangeListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +19,7 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
 
         setContentView(R.layout.custom_preferences); // uses the listview in custom_preferences as the preferenceresource
 
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this); // required for onSharedPreferenceChanged() to be called
+        //getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this); // required for onSharedPreferenceChanged() to be called
 
         ImageButton share = (ImageButton) findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +65,7 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
 
     }
 
-    private void updatePreference(Preference preference) {
+    /*private void updatePreference(Preference preference) {
         ListPreference audioSensitivity = (ListPreference) findPreference("audio_sensitivity");
 
         // defined new sharedpreference because super didn't work
@@ -101,5 +98,5 @@ public class Settings extends PreferenceActivity implements SharedPreferences.On
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updatePreference(findPreference(key));
-    }
+    }*/
 }
