@@ -1,4 +1,4 @@
-NowManager
+Now Manager
 ==========
 
 Timestamp and tally counter for Android
