@@ -16,7 +16,7 @@
         android:divider="@null"
         android:dividerHeight="0dp"
         android:descendantFocusability="beforeDescendants"
-        android:layout_marginBottom="55dp"/>
+        android:layout_marginBottom="0dp"/>
 
     <TextView
         android:id="@android:id/empty"
@@ -27,23 +27,25 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_width="fill_parent"
         android:id="@+id/log_button_background"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@drawable/transparent_bottom_bar">
+
+    </LinearLayout>
 
     <Button
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
         android:id="@+id/newLogButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/new_log_button"/>
 
-    </LinearLayout>
 
 </RelativeLayout>

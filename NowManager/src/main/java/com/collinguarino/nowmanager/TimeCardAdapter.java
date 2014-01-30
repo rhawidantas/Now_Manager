@@ -25,16 +25,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TimeCardAdapter extends CursorAdapter {
+
     private Context mContext;
     private final LayoutInflater mInflater;
-    private int countLimit;
-
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd a");
-    public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss");
-    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss");
-
     final Animation mSlideInAnimation;
 
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd");
+    public static final SimpleDateFormat TIME_FORMAT_MILITARY = new SimpleDateFormat("kk:mm:ss a");
+    public static final SimpleDateFormat TIME_FORMAT_STANDARD = new SimpleDateFormat("hh:mm:ss a");
 
     public TimeCardAdapter(Context context, Cursor c) {
         super(context, c);
@@ -55,8 +53,6 @@ public class TimeCardAdapter extends CursorAdapter {
         } else {
             viewHolder.eventNameInput.setText("");
         }
-
-
 
         // Saves event name input when focus is lost
         viewHolder.eventNameInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -115,12 +111,12 @@ public class TimeCardAdapter extends CursorAdapter {
             }
         });
 
-        // Appending the time card data
+        // Amending the event name
         viewHolder.eventNameInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                // show a dialog that allows users to alter the time card data
+                // display a dialog
                 final Dialog dialog = new Dialog(mContext);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.text_input);
@@ -154,7 +150,7 @@ public class TimeCardAdapter extends CursorAdapter {
 
                 dialog.show();
 
-                // end of method:: MAKE SURE THIS IS MIRRORED IN THE ABOVE METHOD
+                // TODO: MAKE SURE THIS IS MIRRORED IN THE ABOVE METHOD "[Sloppy Hack]"
             }
         });
 
@@ -169,6 +165,15 @@ public class TimeCardAdapter extends CursorAdapter {
         }
         viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(dateTime));
 
+    }
+
+    public boolean getSystemTimeFormat() {
+
+        if (!DateFormat.is24HourFormat(mContext)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

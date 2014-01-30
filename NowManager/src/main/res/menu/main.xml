@@ -1,35 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<item
-        android:id="@+id/voiceActions"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="Voice Actions"
-        android:icon="@drawable/abc_ic_voice_search_api_holo_light"/>-->
-
-    <!--<item android:id="@+id/addnew"
-        android:title="Add"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:icon="@drawable/addnew"/>-->
-
     <item
         android:id="@+id/setCountLimit"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Set Count Limit"/>
-
-    <item
-        android:id="@+id/settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="Settings"/>
-
-    <item
-        android:id="@+id/deleteAll"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="Remove All"/>
 
     <item
         android:id="@+id/goTop"
@@ -42,5 +17,17 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Oldest (Bottom)"/>
+
+    <item
+        android:id="@+id/settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Settings"/>
+
+    <item
+        android:id="@+id/deleteAll"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Remove All"/>
 
 </menu>

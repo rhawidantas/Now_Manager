@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                tools:text="M-D AM/PM"
+                tools:text="M-D"
                 android:layout_gravity="center"
                 android:id="@+id/dateText"
                 android:layout_alignRight="@+id/timeOfDayText"

@@ -18,11 +18,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -41,17 +39,15 @@ import com.collinguarino.nowmanager.provider.NowManagerProvider;
 
 public class Main extends ListActivity implements ActionBar.OnNavigationListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    // System
     private final static String TAG = Main.class.getSimpleName();
     final Context context = this;
-    private ActionBar mActionBar;
     public int countWarning, spinnerIndex;
-    private TimeCardAdapter mAdapter;
 
     // UI
     Button newLogButton;
-
-    // action bar
-    ActionMode mActionMode;
+    private ActionBar mActionBar;
+    private TimeCardAdapter mAdapter;
 
     // Preferences
     boolean volumeKeys, vibrateOn;
@@ -68,8 +64,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         volumeKeys = preferences.getBoolean("volumeKeys", false);
 
         vibrateOn = preferences.getBoolean("vibrateOn", false);
-
-        //audioResponse = preferences.getBoolean("audioResponse", false);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -95,7 +89,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
                 this);
 
 
-        // runs
+        // runs rate dialog: see `showRateDialog()`
         app_launched(this);
 
         // restores index state of action bar spinner
@@ -113,26 +107,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         listView.setOnTouchListener(swipeDismissListViewTouchListener);
         listView.setOnScrollListener(swipeDismissListViewTouchListener.makeScrollListener());
 
-        registerForContextMenu(listView);
-
-        /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (mActionMode != null) {
-                    return false;
-                }
-
-                // Start the CAB using the ActionMode.Callback defined above
-                mActionMode = Main.this.startActionMode(mActionModeCallback);
-                view.setSelected(true);
-                //view.setBackgroundColor(Color.RED); // for touch radius testing purposes
-                return true;
-
-            }
-        });*/
-
         newLogButton = (Button) findViewById(R.id.newLogButton);
         newLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +120,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-
+        // Optional VolumeKeys preference allows users to use the volume up or down buttons to add a new log
         if (volumeKeys) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
                 createNewTimeCard();
@@ -158,58 +132,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             return super.onKeyDown(keyCode, event);
         }
     }
-
-    /**
-     * Contextual action bar
-     * TODO: Share events, change background color, set reminder, delete log
-     */
-    final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.contextual, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            // Actions on contextual action bar once inflated
-            switch (item.getItemId()) {
-                case R.id.share:
-
-                    // DOES NOT WORK : how do I return the value of the selected TimeCard event name and date information?
-                    String totalOutput = ("This feature doesn't work yet, check in later :)");
-
-                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    String shareBody = totalOutput;
-                    sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                    startActivity(Intent.createChooser(sharingIntent, "Share Log With:"));
-
-                    mode.finish(); // Action picked, so close the CAB
-                    return true;
-                case R.id.reminder:
-
-                    // set reminder - open dialog to choose time from event
-
-                    mode.finish(); // Action picked, so close the CAB
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            mActionMode = null;
-        }
-    };
 
     @Override
     protected void onResume() {
@@ -376,8 +298,6 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
 
         countWarning = Integer.parseInt(preferences.getString("countWarning", "0"));
 
-        //defaultEventName = String.valueOf(preferences.getString("defaultEventName", ""));
-
         // cannot use countInterval because getTallyTimeCardCount() doesn't return the previous count
         //countInterval = Integer.parseInt(preferences.getString("countInterval", "1"));
 
@@ -385,6 +305,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         if (mActionBar.getSelectedNavigationIndex() == 1) {
             //get the number of tally rows
             final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this) + 1; // + countInterval
+
             //is tally
             values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
 
@@ -400,6 +321,8 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         }
 
         getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);
+
+        // Vibrate device preference when a new log is added
         if (vibrateOn) {
             ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(300);
         }
