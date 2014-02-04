@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,6 +53,13 @@ public class TimeCardAdapter extends CursorAdapter {
             viewHolder.eventNameInput.setText(timeCard.getEventNameInput());
         } else {
             viewHolder.eventNameInput.setText("");
+        }
+
+        // isThirdParty is passed into the `createNewTimeCard` method
+        if (timeCard.isThirdParty()) {
+            viewHolder.thirdPartyTag.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.thirdPartyTag.setVisibility(View.GONE);
         }
 
         // Saves event name input when focus is lost
@@ -165,6 +173,42 @@ public class TimeCardAdapter extends CursorAdapter {
         }
         viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(dateTime));
 
+        // if it's an event log then show a dialog to enter an event name when creating a new log
+        /*if (timeCard.getEventNameInput() != null) {
+            final Dialog dialog = new Dialog(mContext);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.text_input);
+
+            final EditText eventNameEdit = (EditText) dialog.findViewById(R.id.textInput);
+            final TextView dateText = (TextView) dialog.findViewById(R.id.dateText);
+            final TextView timeText = (TextView) dialog.findViewById(R.id.timeText);
+
+            eventNameEdit.append(viewHolder.eventNameInput.getText().toString()); // append sets input to last char of string
+            dateText.setText(viewHolder.dateText.getText().toString());
+            timeText.setText(viewHolder.timeText.getText().toString());
+
+            // open keyboard to focus on appending the log name
+            eventNameEdit.requestFocus();
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+            Button b1 = (Button) dialog.findViewById(R.id.button1);
+            b1.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    viewHolder.eventNameInput.setText(eventNameEdit.getText().toString());
+
+                    // save the new log data
+                    mContext.getContentResolver().update(Contracts.TimeCards.CONTENT_URI,
+                            Contracts.TimeCards.getUpdateValues(viewHolder.eventNameInput.getText().toString()),
+                            Contracts.TimeCards._ID + " = " + timeCard.getId(),
+                            null);
+
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        }*/
+
     }
 
     public boolean getSystemTimeFormat() {
@@ -196,6 +240,7 @@ public class TimeCardAdapter extends CursorAdapter {
         viewHolder.expandTouchEvent = (RelativeLayout) view.findViewById(R.id.expandTouchEvent);
         viewHolder.dateText = (TextView) view.findViewById(R.id.dateText);
         viewHolder.timeText = (TextView) view.findViewById(R.id.timeText);
+        viewHolder.thirdPartyTag = (ImageView) view.findViewById(R.id.thirdPartyTag);
         view.setTag(viewHolder);
 
         return view;
@@ -206,6 +251,7 @@ public class TimeCardAdapter extends CursorAdapter {
         RelativeLayout expandTouchEvent;
         TextView dateText;
         TextView timeText;
+        ImageView thirdPartyTag;
     }
 
     /**

@@ -49,7 +49,7 @@ public class OverScrollListView extends ListView {
                 + clampedX + " clampedY:" + clampedX);
 
         /*Main main = new Main();
-        main.createNewTimeCard();*/
+        main.createNewTimeCard(false);*/
 
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
 

@@ -17,7 +17,7 @@ final class MainDatabaseHelper extends SQLiteOpenHelper {
      * Do not do database creation and upgrade here.
      */
     MainDatabaseHelper(Context context) {
-        super(context, DBNAME, null, 1);
+        super(context, DBNAME, null, 2); // increment database version (last param)
     }
 
     /*
@@ -25,13 +25,16 @@ final class MainDatabaseHelper extends SQLiteOpenHelper {
      * repository and SQLite reports that it doesn't exist.
      */
     public void onCreate(SQLiteDatabase db) {
-
         // Creates the main table
         db.execSQL(Contracts.TimeCards.SQL_CREATE_MAIN);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-        onCreate(sqLiteDatabase);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion == 1 && newVersion == 2) {
+            db.execSQL("ALTER TABLE " + "timeCards" + " ADD COLUMN " + "isThirdParty" + " int");
+            db.execSQL("UPDATE " + "timeCards"  + " SET " +
+                    "isThirdParty" + "= 0");
+        }
     }
 }

@@ -111,7 +111,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         newLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewTimeCard();
+                createNewTimeCard(false);
             }
         });
 
@@ -123,7 +123,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // Optional VolumeKeys preference allows users to use the volume up or down buttons to add a new log
         if (volumeKeys) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                createNewTimeCard();
+                createNewTimeCard(false);
                 return true;
             } else {
                 return super.onKeyDown(keyCode, event);
@@ -289,7 +289,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         alert.show();
     }
 
-    public void createNewTimeCard() {
+    public void createNewTimeCard(boolean isThirdParty) {
         final NowManagerProvider provider = new NowManagerProvider();
         final ContentValues values;
 
@@ -307,7 +307,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
             final int tallyCount = Contracts.TimeCards.getTallyTimeCardCount(this) + 1; // + countInterval
 
             //is tally
-            values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true);
+            values = Contracts.TimeCards.getInsertValues(String.valueOf(tallyCount), true, isThirdParty);
 
             // Tally limit has been reached
             if (countWarning == Integer.valueOf(tallyCount) && countWarning != 0) {
@@ -317,7 +317,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         // If there is a defined default event name, use it
         } else {
             //not a tally
-            values = Contracts.TimeCards.getInsertValues(null, false);
+            values = Contracts.TimeCards.getInsertValues(null, false, isThirdParty);
         }
 
         getContentResolver().insert(Contracts.TimeCards.CONTENT_URI, values);

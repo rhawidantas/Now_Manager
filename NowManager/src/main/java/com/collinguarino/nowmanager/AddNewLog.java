@@ -15,7 +15,7 @@ public class AddNewLog extends Main {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createNewTimeCard();
+        createNewTimeCard(true);
 
     }
 }

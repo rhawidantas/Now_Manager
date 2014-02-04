@@ -8,7 +8,7 @@ public class TimeCard {
     private long id;
     private String eventNameInput;
     private long timestamp;
-    private boolean isTally;
+    private boolean isTally, isThirdParty;
 
     public TimeCard() {
     }
@@ -18,6 +18,7 @@ public class TimeCard {
         eventNameInput = cursor.getString(Contracts.TimeCards.I_EVENT_NAME_INPUT);
         timestamp = cursor.getLong(Contracts.TimeCards.I_TIMESTAMP);
         isTally = cursor.getInt(Contracts.TimeCards.I_IS_TALLY) == 1;
+        isThirdParty = cursor.getInt(Contracts.TimeCards.I_IS_THIRD_PARTY) == 1;
     }
 
     public long getId() {
@@ -48,6 +49,10 @@ public class TimeCard {
         return isTally;
     }
 
+    public boolean isThirdParty() {
+        return isThirdParty;
+    }
+
     public void setTally(boolean isTally) {
         this.isTally = isTally;
     }
@@ -61,6 +66,7 @@ public class TimeCard {
 
         if (id != timeCard.id) return false;
         if (isTally != timeCard.isTally) return false;
+        if (isThirdParty != timeCard.isThirdParty) return false;
         if (timestamp != timeCard.timestamp) return false;
         if (eventNameInput != null ? !eventNameInput.equals(timeCard.eventNameInput) : timeCard.eventNameInput != null)
             return false;
@@ -84,6 +90,7 @@ public class TimeCard {
                 ", eventNameInput='" + eventNameInput + '\'' +
                 ", timestamp=" + timestamp +
                 ", isTally=" + isTally +
+                ", isThirdParty=" + isThirdParty +
                 '}';
     }
 }

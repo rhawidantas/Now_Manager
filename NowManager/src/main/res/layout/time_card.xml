@@ -19,6 +19,17 @@
         android:background="@drawable/card_background"
         android:id="@+id/timeCardFragmentLayout">
 
+        <ImageView
+            android:layout_marginRight="5dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/third_party_icon"
+            android:gravity="top|right"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/thirdPartyTag"/>
+
     <!--This is a bit of a hack, but it works. The onClickListener for the EditText wasn't
         reliable due to the touch radius, so this has an onClickListener that mirrors it.-->
     <RelativeLayout
