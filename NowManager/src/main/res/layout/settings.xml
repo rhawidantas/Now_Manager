@@ -31,42 +31,16 @@
             android:key="vibrateOn"
             android:defaultValue="false"/>
 
-        <!--<CheckBoxPreference
-            android:title="Action Bar Buttons"
-            android:summary="Move the new log button to the top."
-            android:key="actionBarButtons"
-            android:defaultValue="false"/>-->
-
     </PreferenceCategory>
 
-    <!--<PreferenceCategory android:title="Event Logs">
+    <!--<PreferenceCategory android:title="Savings Logs">
 
-        <EditTextPreference
-            android:title="Default Event Name"
-            android:defaultValue=""
-            android:key="defaultEventName"
-            android:summary="Preset event title for new logs."/>
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="Tally Counter">
-
-        &lt;!&ndash;<EditTextPreference
-            android:title="Count Interval"
-            android:defaultValue="1"
-            android:key="countInterval"
-            android:summary="Count by a specified integer."
-            android:inputType="number"
-            android:maxLength="4"/>&ndash;&gt;
-
-        <EditTextPreference
-            android:title="Count Warning"
-            android:defaultValue="0"
-            android:key="countWarning"
-            android:summary="Display a warning on a number (zero to disable)."
-            android:inputType="number"
-            android:maxLength="4"/>
+        <Preference
+            android:key="exportDatabase"
+            android:title="Export"
+            android:summary="Save all logs to storage."/>
 
     </PreferenceCategory>-->
+
 
 </PreferenceScreen>

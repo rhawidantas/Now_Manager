@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,6 +107,17 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         SwipeDismissListViewTouchListener swipeDismissListViewTouchListener = new SwipeDismissListViewTouchListener(listView, listDismissCallbacks);
         listView.setOnTouchListener(swipeDismissListViewTouchListener);
         listView.setOnScrollListener(swipeDismissListViewTouchListener.makeScrollListener());
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
 
         newLogButton = (Button) findViewById(R.id.newLogButton);
         newLogButton.setOnClickListener(new View.OnClickListener() {
@@ -211,7 +223,7 @@ public class Main extends ListActivity implements ActionBar.OnNavigationListener
         final ListView listView = getListView();
         if(listView != null) {
             final int visibleItemsInList = listView.getLastVisiblePosition() - listView.getFirstVisiblePosition() + 1;
-            final boolean showJumpToOptions =  itemCount > visibleItemsInList;
+            final boolean showJumpToOptions =  itemCount > visibleItemsInList + 25;
             menu.findItem(R.id.goTop).setVisible(showJumpToOptions);
             menu.findItem(R.id.goBot).setVisible(showJumpToOptions);
         }

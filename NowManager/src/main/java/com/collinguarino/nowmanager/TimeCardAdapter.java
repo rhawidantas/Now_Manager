@@ -48,6 +48,7 @@ public class TimeCardAdapter extends CursorAdapter {
         final ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         final TimeCard timeCard = new TimeCard(cursor);
+
         //set event name input
         if (timeCard.getEventNameInput() != null) {
             viewHolder.eventNameInput.setText(timeCard.getEventNameInput());
@@ -63,6 +64,7 @@ public class TimeCardAdapter extends CursorAdapter {
         }
 
         // Saves event name input when focus is lost
+        // TODO: not sure if this is needed anymore because you no longer can type directly into the edittext of a TimeCard on the main layout
         viewHolder.eventNameInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -76,46 +78,11 @@ public class TimeCardAdapter extends CursorAdapter {
             }
         });
 
+        // Hacked together method of expanding the touch radius of the edittext without making the TimeCard layout bigger
         viewHolder.expandTouchEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // [Sloppy Hack] Attempt to expand touch radius by placing a larger view below the edittext (eventNameInput)
-                // THIS MUST MIRROR THE BELOW METHOD
-
-                // show a dialog that allows users to alter the time card data
-                final Dialog dialog = new Dialog(mContext);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.text_input);
-
-                final EditText eventNameEdit = (EditText) dialog.findViewById(R.id.textInput);
-                final TextView dateText = (TextView) dialog.findViewById(R.id.dateText);
-                final TextView timeText = (TextView) dialog.findViewById(R.id.timeText);
-
-                eventNameEdit.append(viewHolder.eventNameInput.getText().toString()); // append sets input to last char of string
-                dateText.setText(viewHolder.dateText.getText().toString());
-                timeText.setText(viewHolder.timeText.getText().toString());
-
-                // open keyboard to focus on appending the log name
-                eventNameEdit.requestFocus();
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-                Button b1 = (Button) dialog.findViewById(R.id.button1);
-                b1.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        viewHolder.eventNameInput.setText(eventNameEdit.getText().toString());
-
-                        // save the new log data
-                        mContext.getContentResolver().update(Contracts.TimeCards.CONTENT_URI,
-                                Contracts.TimeCards.getUpdateValues(viewHolder.eventNameInput.getText().toString()),
-                                Contracts.TimeCards._ID + " = " + timeCard.getId(),
-                                null);
-
-                        dialog.dismiss();
-                    }
-                });
-
-                dialog.show();
-
+                amendInput(viewHolder, timeCard);
             }
         });
 
@@ -123,42 +90,7 @@ public class TimeCardAdapter extends CursorAdapter {
         viewHolder.eventNameInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // display a dialog
-                final Dialog dialog = new Dialog(mContext);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.text_input);
-
-                final EditText eventNameEdit = (EditText) dialog.findViewById(R.id.textInput);
-                final TextView dateText = (TextView) dialog.findViewById(R.id.dateText);
-                final TextView timeText = (TextView) dialog.findViewById(R.id.timeText);
-
-                eventNameEdit.append(viewHolder.eventNameInput.getText().toString()); // append sets input to last char of string
-                dateText.setText(viewHolder.dateText.getText().toString());
-                timeText.setText(viewHolder.timeText.getText().toString());
-
-                // open keyboard to focus on appending the log name
-                eventNameEdit.requestFocus();
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-                Button b1 = (Button) dialog.findViewById(R.id.button1);
-                b1.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        viewHolder.eventNameInput.setText(eventNameEdit.getText().toString());
-
-                        // save the new log data
-                        mContext.getContentResolver().update(Contracts.TimeCards.CONTENT_URI,
-                                Contracts.TimeCards.getUpdateValues(viewHolder.eventNameInput.getText().toString()),
-                                Contracts.TimeCards._ID + " = " + timeCard.getId(),
-                                null);
-
-                        dialog.dismiss();
-                    }
-                });
-
-                dialog.show();
-
-                // TODO: MAKE SURE THIS IS MIRRORED IN THE ABOVE METHOD "[Sloppy Hack]"
+                amendInput(viewHolder, timeCard);
             }
         });
 
@@ -173,42 +105,42 @@ public class TimeCardAdapter extends CursorAdapter {
         }
         viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(dateTime));
 
-        // if it's an event log then show a dialog to enter an event name when creating a new log
-        /*if (timeCard.getEventNameInput() != null) {
-            final Dialog dialog = new Dialog(mContext);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.text_input);
+    }
 
-            final EditText eventNameEdit = (EditText) dialog.findViewById(R.id.textInput);
-            final TextView dateText = (TextView) dialog.findViewById(R.id.dateText);
-            final TextView timeText = (TextView) dialog.findViewById(R.id.timeText);
+    // Edit the TimeCard object data
+    public void amendInput(final ViewHolder viewHolder, final TimeCard timeCard) {
+        final Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.text_input);
 
-            eventNameEdit.append(viewHolder.eventNameInput.getText().toString()); // append sets input to last char of string
-            dateText.setText(viewHolder.dateText.getText().toString());
-            timeText.setText(viewHolder.timeText.getText().toString());
+        final EditText eventNameEdit = (EditText) dialog.findViewById(R.id.textInput);
+        final TextView dateText = (TextView) dialog.findViewById(R.id.dateText);
+        final TextView timeText = (TextView) dialog.findViewById(R.id.timeText);
 
-            // open keyboard to focus on appending the log name
-            eventNameEdit.requestFocus();
-            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        eventNameEdit.append(viewHolder.eventNameInput.getText().toString()); // append sets input to last char of string
+        dateText.setText(viewHolder.dateText.getText().toString());
+        timeText.setText(viewHolder.timeText.getText().toString());
 
-            Button b1 = (Button) dialog.findViewById(R.id.button1);
-            b1.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    viewHolder.eventNameInput.setText(eventNameEdit.getText().toString());
+        // open keyboard to focus on appending the log name
+        eventNameEdit.requestFocus();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-                    // save the new log data
-                    mContext.getContentResolver().update(Contracts.TimeCards.CONTENT_URI,
-                            Contracts.TimeCards.getUpdateValues(viewHolder.eventNameInput.getText().toString()),
-                            Contracts.TimeCards._ID + " = " + timeCard.getId(),
-                            null);
+        Button b1 = (Button) dialog.findViewById(R.id.button1);
+        b1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                viewHolder.eventNameInput.setText(eventNameEdit.getText().toString());
 
-                    dialog.dismiss();
-                }
-            });
+                // save the new log data
+                mContext.getContentResolver().update(Contracts.TimeCards.CONTENT_URI,
+                        Contracts.TimeCards.getUpdateValues(viewHolder.eventNameInput.getText().toString()),
+                        Contracts.TimeCards._ID + " = " + timeCard.getId(),
+                        null);
 
-            dialog.show();
-        }*/
+                dialog.dismiss();
+            }
+        });
 
+        dialog.show();
     }
 
     public boolean getSystemTimeFormat() {

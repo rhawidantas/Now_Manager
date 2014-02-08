@@ -3,8 +3,8 @@
 
     <string name="app_name">Now Manager</string>
     <string name="action_settings">Settings</string>
-    <string name="title_section1">Event Logs</string>
-    <string name="title_section2">Tally Counter</string>
+    <string name="title_section1">Log Actions &amp; Events</string>
+    <string name="title_section2">Tally Count Log</string>
     <string name="no_events">No logs have been created.</string>
 
 </resources>

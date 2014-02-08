@@ -28,6 +28,6 @@
         android:id="@+id/deleteAll"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Remove All"/>
+        android:title="Remove All Logs"/>
 
 </menu>
