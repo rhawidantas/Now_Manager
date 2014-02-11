@@ -105,6 +105,8 @@ public class TimeCardAdapter extends CursorAdapter {
         }
         viewHolder.dateText.setText(TimeCardAdapter.DATE_FORMAT.format(dateTime));
 
+
+
     }
 
     // Edit the TimeCard object data

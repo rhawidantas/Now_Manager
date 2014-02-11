@@ -9,21 +9,19 @@
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/nowmanagericon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:debuggable="true">
+        android:debuggable="false">
 
         <activity
             android:name="com.collinguarino.nowmanager.Main"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustPan">
             <!-- Adjust pan helps edit text views keep focus on the list view. -->
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
